@@ -80,11 +80,22 @@ void main() {
           ]);
     });
 
-//    test('Test merge duplicates', () {
-//      final x = [1, 2, 3, 5, 6];
-//      final y = [2, 3, 3, 6, 7, 8];
-//
-//      expect(mergeChanges(x, y), [1, 2, 3, 5, 6, 7, 8]);
-//    });
+    test('Test merge duplicates', () {
+      final x = [1, 2, 3, 5, 6];
+      final y = [2, 3, 3, 6, 7, 8];
+
+      expect(mergeChanges(x, y), [1, 2, 3, 5, 6, 7, 8]);
+    });
+  });
+
+  group('Test copyOnlyUnique function', () {
+    test('Test copyOnlyUnique', () {
+      final x = [1, 2, 3, 4, 4, 5, 6, 5, 1, 2, 1, 1, 3, 7];
+
+      expect(
+        copyOnlyUnique(x),
+        [1, 2, 3, 4, 5, 6, 7],
+      );
+    });
   });
 }

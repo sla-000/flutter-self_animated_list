@@ -223,6 +223,9 @@ List<T> mergeChanges<T>(
   assert(list1 != null);
   assert(list2 != null);
 
+  list1 = copyOnlyUnique(list1, isEqual: isEqual);
+  list2 = copyOnlyUnique(list2, isEqual: isEqual);
+
   final rez = <T>[];
 
   var index1 = 0;
@@ -248,12 +251,11 @@ List<T> mergeChanges<T>(
         index2 = find1in2index;
       } else if (find2in1index != -1 && find1in2index != -1) {
         debugPrint(
-            "mergeOneChange: Found collision,\nlist1=$list1,\nlist2=$list2");
+            "mergeChanges: Found collision,\nlist1=$list1,\nlist2=$list2");
         ++index1;
         ++index2;
       } else {
-        debugPrint(
-            "mergeOneChange: Unique chunk,\nlist1=$list1,\nlist2=$list2");
+        debugPrint("mergeChanges: Unique chunk,\nlist1=$list1,\nlist2=$list2");
         rez.add(list1[index1++]);
         rez.add(list2[index2++]);
       }
@@ -267,6 +269,31 @@ List<T> mergeChanges<T>(
   if (index2 < list2.length) {
     rez.addAll(list2.sublist(index2));
   }
+
+  return rez;
+}
+
+List<T> copyOnlyUnique<T>(
+  List<T> inList, {
+  bool Function(T x1, T x2) isEqual = _isEqualDefault,
+}) {
+  final havingValues = Set<T>();
+
+  final rez = <T>[];
+
+  inList.forEach((inListValue) {
+    final checkRepeated = havingValues.firstWhere(
+        (havingValue) => isEqual(inListValue, havingValue),
+        orElse: () => null);
+
+    if (checkRepeated == null) {
+      rez.add(inListValue);
+      havingValues.add(inListValue);
+    } else {
+      debugPrint(
+          "copyOnlyUnique: Repeating inListValue=$inListValue, inList=$inList");
+    }
+  });
 
   return rez;
 }
