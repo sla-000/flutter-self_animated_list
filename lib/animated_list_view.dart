@@ -79,7 +79,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
       }
     });
 
-    final merged = mergeOneChange<Widget>(
+    final merged = mergeChanges<Widget>(
       _previousChildren,
       widget.children,
       isEqual: (a, b) => a.key == b.key,
@@ -213,9 +213,9 @@ class _ShowAnimatedState extends State<ShowAnimated>
   }
 }
 
-bool _isEqualDefault(x1, x2) => x1 == x2;
+bool _isEqualDefault(a, b) => a.runtimeType == b.runtimeType && a == b;
 
-List<T> mergeOneChange<T>(
+List<T> mergeChanges<T>(
   List<T> list1,
   List<T> list2, {
   bool Function(T x1, T x2) isEqual = _isEqualDefault,
@@ -234,29 +234,39 @@ List<T> mergeOneChange<T>(
       ++index1;
       ++index2;
     } else {
-      final forward1 = (index1 + 1 < list1.length)
-          ? isEqual(list1[index1 + 1], list2[index2])
-          : false;
+      final find2in1index =
+          list1.indexWhere((value) => isEqual(value, list2[index2]));
 
-      final forward2 = (index2 + 1 < list2.length)
-          ? isEqual(list2[index2 + 1], list1[index1])
-          : false;
+      final find1in2index =
+          list2.indexWhere((value) => isEqual(value, list1[index1]));
 
-      if (forward1 && !forward2) {
-        rez.add(list1[index1++]);
-      } else if (!forward1 && forward2) {
-        rez.add(list2[index2++]);
+      if (find2in1index != -1 && find1in2index == -1) {
+        rez.addAll(list1.sublist(index1, find2in1index));
+        index1 = find2in1index;
+      } else if (find2in1index == -1 && find1in2index != -1) {
+        rez.addAll(list2.sublist(index2, find1in2index));
+        index2 = find1in2index;
+      } else if (find2in1index != -1 && find1in2index != -1) {
+        debugPrint(
+            "mergeOneChange: Found collision,\nlist1=$list1,\nlist2=$list2");
+        ++index1;
+        ++index2;
       } else {
         debugPrint(
-            "mergeOneChange: 2 or more values changed,\nlist1=$list1,\nlist2=$list2");
-        index1++;
+            "mergeOneChange: Unique chunk,\nlist1=$list1,\nlist2=$list2");
+        rez.add(list1[index1++]);
+        rez.add(list2[index2++]);
       }
     }
   }
 
-  list1.length < list2.length
-      ? rez.addAll(list2.sublist(index2))
-      : rez.addAll(list1.sublist(index1));
+  if (index1 < list1.length) {
+    rez.addAll(list1.sublist(index1));
+  }
+
+  if (index2 < list2.length) {
+    rez.addAll(list2.sublist(index2));
+  }
 
   return rez;
 }
