@@ -193,6 +193,13 @@ class OneItem extends StatelessWidget {
               onPressed: () => onAddAfter(),
             ),
           ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: IconButton(
+              icon: Icon(Icons.delete_forever),
+              onPressed: () => onDelete(),
+            ),
+          ),
         ],
       ),
     );
