@@ -28,15 +28,23 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _horizontalItems = <Item>[];
   final _verticalItems = <Item>[];
+  int tilesCounter = 0;
 
   @override
   void initState() {
     super.initState();
 
     for (int index = 0; index < 10; ++index) {
-      _horizontalItems.add(Item(index));
-      _verticalItems.add(Item(index));
+      _horizontalItems.add(Item(_getNextNumber()));
     }
+
+    for (int index = 0; index < 10; ++index) {
+      _verticalItems.add(Item(_getNextNumber()));
+    }
+  }
+
+  int _getNextNumber() {
+    return ++tilesCounter;
   }
 
   @override
@@ -100,44 +108,40 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onAddBefore(List<Item> lst, int currentNumber) {
-    final max = _findNextNumber(lst);
+    final next = _getNextNumber();
 
     final itemIndex = lst.indexWhere((item) => item.number == currentNumber);
 
     lst.insert(
       itemIndex,
-      Item(max),
+      Item(next),
     );
 
     setState(() {});
   }
 
   void _onAddAfter(List<Item> lst, int currentNumber) {
-    final max = _findNextNumber(lst);
+    final next = _getNextNumber();
 
     final itemIndex = lst.indexWhere((item) => item.number == currentNumber);
 
     lst.insert(
       itemIndex + 1,
-      Item(max),
+      Item(next),
     );
 
     setState(() {});
   }
 
-  int _findNextNumber(List<Item> lst) {
-    return 1 +
-        lst.fold<int>(
-          0,
-          (prev, item) => (prev > item.number) ? prev : item.number,
-        );
-  }
-
   void _onDelete(List<Item> lst, int currentNumber) {
-    final item = lst.firstWhere((item) => item.number == currentNumber);
-    lst.remove(item);
+    final item = lst.firstWhere((item) => item.number == currentNumber,
+        orElse: () => null);
 
-    setState(() {});
+    if (item != null) {
+      setState(() {
+        lst.remove(item);
+      });
+    }
   }
 }
 
