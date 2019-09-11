@@ -12,14 +12,15 @@ class ShowAnimated extends StatefulWidget {
     @required this.child,
     this.onAnimationComplete,
     this.appearing = true,
-    this.duration = const Duration(milliseconds: 500),
+    Duration duration,
     @required this.customAnimation,
-  }) : super(key: key);
+  })  : _duration = duration ?? const Duration(milliseconds: 500),
+        super(key: key);
 
   final Widget child;
   final bool appearing;
   final void Function() onAnimationComplete;
-  final Duration duration;
+  final Duration _duration;
   final CustomAnimation customAnimation;
 
   @override
@@ -36,19 +37,23 @@ class _ShowAnimatedState extends State<ShowAnimated>
     super.initState();
 
     _animationController =
-        AnimationController(vsync: this, duration: widget.duration);
+        AnimationController(vsync: this, duration: widget._duration);
 
-    _animation = widget.appearing
-        ? Tween(begin: 0.0, end: 1.0).animate(_animationController)
-        : Tween(begin: 1.0, end: 0.0).animate(_animationController);
+    _animation = Tween(begin: 0.0, end: 1.0).animate(_animationController);
 
     _animationController.addListener(() {
       if (mounted) setState(() {});
     });
 
-    _animationController.forward(from: 0.0).whenCompleteOrCancel(() {
-      widget.onAnimationComplete?.call();
-    });
+    if (widget.appearing) {
+      _animationController.forward(from: 0.0).whenCompleteOrCancel(() {
+        widget.onAnimationComplete?.call();
+      });
+    } else {
+      _animationController.reverse(from: 1.0).whenCompleteOrCancel(() {
+        widget.onAnimationComplete?.call();
+      });
+    }
   }
 
   @override

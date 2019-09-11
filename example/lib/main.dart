@@ -87,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: AnimatedListView(
                 scrollDirection: Axis.horizontal,
                 children: _horizontalWidgets,
+                duration: Duration(milliseconds: 1500),
               ),
             ),
           ),
@@ -99,12 +100,45 @@ class _MyHomePageState extends State<MyHomePage> {
               child: AnimatedListView(
                 scrollDirection: Axis.vertical,
                 children: _verticalWidgets,
+                customAnimation: _customAnimation,
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _customAnimation({
+    @required Widget child,
+    @required Animation<double> animation,
+    @required bool appearing,
+  }) {
+    if (appearing) {
+      final curvedAnimation =
+          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+
+      return SizeTransition(
+        sizeFactor: curvedAnimation,
+        axis: Axis.vertical,
+        child: child,
+      );
+    } else {
+      final sizeAnimation =
+          CurvedAnimation(parent: animation, curve: Curves.bounceOut.flipped);
+
+      final opacityAnimation =
+          CurvedAnimation(parent: animation, curve: Curves.easeInExpo.flipped);
+
+      return SizeTransition(
+        sizeFactor: sizeAnimation,
+        axis: Axis.vertical,
+        child: Opacity(
+          opacity: opacityAnimation.value,
+          child: child,
+        ),
+      );
+    }
   }
 
   void _onAddBefore(List<Item> lst, int currentNumber) {
@@ -180,28 +214,28 @@ class OneItem extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: IconButton(
               icon: Icon(Icons.plus_one),
-              onPressed: () => onAddBefore(),
+              onPressed: onAddBefore,
             ),
           ),
           Align(
             alignment: Alignment.topRight,
             child: IconButton(
               icon: Icon(Icons.delete_forever),
-              onPressed: () => onDelete(),
+              onPressed: onDelete,
             ),
           ),
           Align(
             alignment: Alignment.bottomRight,
             child: IconButton(
               icon: Icon(Icons.plus_one),
-              onPressed: () => onAddAfter(),
+              onPressed: onAddAfter,
             ),
           ),
           Align(
             alignment: Alignment.bottomLeft,
             child: IconButton(
               icon: Icon(Icons.delete_forever),
-              onPressed: () => onDelete(),
+              onPressed: onDelete,
             ),
           ),
         ],

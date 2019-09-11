@@ -60,7 +60,6 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   @override
   void initState() {
     super.initState();
-    debugPrint("initState:");
 
     _customAnimation = widget.customAnimation ?? _defaultAnimation;
   }
@@ -72,7 +71,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   }) {
     final _curvedAnimation = appearing
         ? CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)
-        : CurvedAnimation(parent: animation, curve: Curves.easeInCubic);
+        : CurvedAnimation(parent: animation, curve: Curves.easeInCubic.flipped);
 
     return SizeTransition(
       sizeFactor: _curvedAnimation,
@@ -113,8 +112,6 @@ class _AnimatedListViewState extends State<AnimatedListView> {
 
     _previousChildren.clear();
     _previousChildren.addAll(merged);
-    debugPrint(
-        "merged: ${_previousChildren.map((child) => child.key).toList()}");
 
     final wrappedChildren =
         merged.map((child) => _buildAnimated(child)).toList();
@@ -144,32 +141,29 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     final mustAdd = _toAdd.contains(child.key);
 
     if (mustDelete) {
-      debugPrint("_buildAnimated: _toRemove=$_toRemove");
-
       return ShowAnimated(
         key: child.key,
         customAnimation: _customAnimation,
-        child: child,
+        duration: widget.duration,
         appearing: false,
         onAnimationComplete: () {
-          debugPrint("onAnimationComplete: _toRemove.remove=${child.key}");
           _previousChildren.remove(child);
           _toRemove.remove(child.key);
           setState(() {});
         },
+        child: child,
       );
     } else if (mustAdd) {
-      debugPrint("_buildAnimated: _toAdd=$_toAdd");
       return ShowAnimated(
         key: child.key,
         customAnimation: _customAnimation,
-        child: child,
+        duration: widget.duration,
         appearing: true,
         onAnimationComplete: () {
-          debugPrint("onAnimationComplete: _toAdd.remove=${child.key}");
           _toAdd.remove(child.key);
           setState(() {});
         },
+        child: child,
       );
     } else {
       return child;

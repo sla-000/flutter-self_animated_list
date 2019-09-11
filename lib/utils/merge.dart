@@ -32,12 +32,9 @@ List<T> mergeChanges<T>(
         rez.addAll(list2.sublist(index2, find1in2index));
         index2 = find1in2index;
       } else if (find2in1index != -1 && find1in2index != -1) {
-//        debugPrint(
-//            "mergeChanges: Found collision,\nlist1=$list1,\nlist2=$list2");
         ++index1;
         ++index2;
       } else {
-//        debugPrint("mergeChanges: Unique chunk,\nlist1=$list1,\nlist2=$list2");
         rez.add(list1[index1++]);
         rez.add(list2[index2++]);
       }
