@@ -1,7 +1,7 @@
 name: animated_list_view
 description: Animated list view based on standard ListView and reacting on children parameter change
-  with custom appear&#x2F;disappear animation
-version: 0.0.1
+  with custom appear/disappear animation
+version: 0.1.0
 author:
 homepage:
 
