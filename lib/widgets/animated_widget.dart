@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-typedef Widget CustomAnimation({
+typedef CustomAnimation = Widget Function({
   @required Widget child,
   @required Animation<double> animation,
   @required bool appearing,
