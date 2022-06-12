@@ -1,9 +1,13 @@
-import 'dart:math';
-
 import 'package:animated_list_view/animated_list_view.dart';
+import 'package:collection/collection.dart';
+import 'package:example/item_model.dart';
+import 'package:example/item_tile.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
+
+const double kTileWidth = 150;
+const double kTileHeight = 120;
 
 class MyApp extends StatelessWidget {
   @override
@@ -26,69 +30,57 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _horizontalItems = <Item>[];
-  final _verticalItems = <Item>[];
-  int tilesCounter = 0;
+  final _horizontalItems =
+      List<ItemModel>.generate(10, (_) => ItemModel(getRandomKey()));
+  final _verticalItems =
+      List<ItemModel>.generate(10, (_) => ItemModel(getRandomKey()));
 
-  @override
-  void initState() {
-    super.initState();
-
-    for (int index = 0; index < 10; ++index) {
-      _horizontalItems.add(Item(_getNextNumber()));
-    }
-
-    for (int index = 0; index < 10; ++index) {
-      _verticalItems.add(Item(_getNextNumber()));
-    }
-  }
-
-  int _getNextNumber() {
-    return ++tilesCounter;
-  }
+  List<Widget> _buildWidgets(List<ItemModel> items) => items
+      .mapIndexed(
+        (index, item) => SizedBox(
+          width: kTileWidth,
+          height: kTileHeight,
+          child: ItemTile(
+            key: ValueKey(item.value),
+            value: index + 1,
+            color: item.color,
+            vertical: false,
+            onDelete: () {
+              setState(() {
+                items.removeAt(index);
+              });
+            },
+            onAddAfter: () {
+              setState(() {
+                items.insert(index + 1, ItemModel(getRandomKey()));
+              });
+            },
+            onAddBefore: () {
+              setState(() {
+                items.insert(index, ItemModel(getRandomKey()));
+              });
+            },
+          ),
+        ),
+      )
+      .toList();
 
   @override
   Widget build(BuildContext context) {
-    final _horizontalWidgets = _horizontalItems
-        .map((item) => OneItem(
-              key: ValueKey(item.number),
-              number: item.number,
-              color: item.color,
-              vertical: false,
-              onDelete: () => _onDelete(_horizontalItems, item.number),
-              onAddAfter: () => _onAddAfter(_horizontalItems, item.number),
-              onAddBefore: () => _onAddBefore(_horizontalItems, item.number),
-            ))
-        .toList();
-
-    final _verticalWidgets = _verticalItems
-        .map((item) => OneItem(
-              key: ValueKey(item.number),
-              number: item.number,
-              color: item.color,
-              vertical: true,
-              onDelete: () => _onDelete(_verticalItems, item.number),
-              onAddAfter: () => _onAddAfter(_verticalItems, item.number),
-              onAddBefore: () => _onAddBefore(_verticalItems, item.number),
-            ))
-        .toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Test AnimatedListView"),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            height: 100,
-            child: Scrollbar(
-              child: AnimatedListView(
-                scrollDirection: Axis.horizontal,
-                children: _horizontalWidgets,
-                duration: Duration(milliseconds: 1500),
-              ),
+          SizedBox(
+            height: kTileHeight,
+            child: AnimatedListView(
+              physics: BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              children: _buildWidgets(_horizontalItems),
+              duration: Duration(milliseconds: 1500),
             ),
           ),
           Container(
@@ -96,12 +88,21 @@ class _MyHomePageState extends State<MyHomePage> {
             color: Theme.of(context).dividerColor,
           ),
           Expanded(
-            child: Scrollbar(
-              child: AnimatedListView(
-                scrollDirection: Axis.vertical,
-                children: _verticalWidgets,
-                customAnimation: _customAnimation,
-              ),
+            child: Row(
+              children: <Widget>[
+                SizedBox(
+                  width: kTileWidth,
+                  child: AnimatedListView(
+                    physics: BouncingScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    children: _buildWidgets(_verticalItems),
+                    customAnimation: _customAnimation,
+                  ),
+                ),
+                Expanded(
+                  child: Center(),
+                ),
+              ],
             ),
           ),
         ],
@@ -140,137 +141,4 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
   }
-
-  void _onAddBefore(List<Item> lst, int currentNumber) {
-    final next = _getNextNumber();
-
-    final itemIndex = lst.indexWhere((item) => item.number == currentNumber);
-
-    lst.insert(
-      itemIndex,
-      Item(next),
-    );
-
-    setState(() {});
-  }
-
-  void _onAddAfter(List<Item> lst, int currentNumber) {
-    final next = _getNextNumber();
-
-    final itemIndex = lst.indexWhere((item) => item.number == currentNumber);
-
-    lst.insert(
-      itemIndex + 1,
-      Item(next),
-    );
-
-    setState(() {});
-  }
-
-  void _onDelete(List<Item> lst, int currentNumber) {
-    final item = lst.firstWhere((item) => item.number == currentNumber,
-        orElse: () => null);
-
-    if (item != null) {
-      setState(() {
-        lst.remove(item);
-      });
-    }
-  }
-}
-
-class OneItem extends StatelessWidget {
-  OneItem({
-    Key key,
-    @required this.number,
-    @required this.color,
-    @required this.onAddBefore,
-    @required this.onAddAfter,
-    @required this.onDelete,
-    this.vertical = true,
-  }) : super(key: key);
-
-  final int number;
-  final Color color;
-  final bool vertical;
-
-  final void Function() onAddBefore;
-  final void Function() onAddAfter;
-  final void Function() onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: vertical ? double.infinity : 120,
-      height: vertical ? 100 : double.infinity,
-      color: color,
-      child: Stack(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.center,
-            child: Text("Tile #$number"),
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: IconButton(
-              icon: Icon(Icons.plus_one),
-              onPressed: onAddBefore,
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              icon: Icon(Icons.delete_forever),
-              onPressed: onDelete,
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: IconButton(
-              icon: Icon(Icons.plus_one),
-              onPressed: onAddAfter,
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: IconButton(
-              icon: Icon(Icons.delete_forever),
-              onPressed: onDelete,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Item {
-  Item(this.number) : this.color = _getRandomColor();
-
-  final int number;
-  final Color color;
-
-  static Color _getRandomColor() {
-    return Color.fromARGB(
-      0xFF,
-      _getRandomInt(),
-      _getRandomInt(),
-      _getRandomInt(),
-    );
-  }
-
-  static int _getRandomInt() {
-    const delta = 200;
-    return Random.secure().nextInt(delta) + 255 - delta;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Item &&
-          runtimeType == other.runtimeType &&
-          number == other.number;
-
-  @override
-  int get hashCode => number.hashCode;
 }
