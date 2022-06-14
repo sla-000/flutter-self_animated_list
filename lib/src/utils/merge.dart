@@ -1,4 +1,5 @@
-bool _isEqualDefault(a, b) => a.runtimeType == b.runtimeType && a == b;
+bool _isEqualDefault(dynamic a, dynamic b) =>
+    a.runtimeType == b.runtimeType && a == b;
 
 List<T> mergeChanges<T>(
   List<T> list1,
@@ -8,10 +9,10 @@ List<T> mergeChanges<T>(
   assert(list1 != null);
   assert(list2 != null);
 
-  final rez = <T>[];
+  final List<T> rez = <T>[];
 
-  var index1 = 0;
-  var index2 = 0;
+  int index1 = 0;
+  int index2 = 0;
 
   while (index1 < list1.length && index2 < list2.length) {
     if (isEqual(list2[index2], list1[index1])) {
@@ -19,11 +20,11 @@ List<T> mergeChanges<T>(
       ++index1;
       ++index2;
     } else {
-      final find2in1index =
-          list1.indexWhere((value) => isEqual(value, list2[index2]));
+      final int find2in1index =
+          list1.indexWhere((T value) => isEqual(value, list2[index2]));
 
-      final find1in2index =
-          list2.indexWhere((value) => isEqual(value, list1[index1]));
+      final int find1in2index =
+          list2.indexWhere((T value) => isEqual(value, list1[index1]));
 
       if (find2in1index != -1 && find1in2index == -1) {
         rez.addAll(list1.sublist(index1, find2in1index));

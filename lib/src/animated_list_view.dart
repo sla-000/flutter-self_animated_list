@@ -7,8 +7,8 @@ import 'utils/merge.dart';
 import 'widgets/animated_widget.dart';
 
 class AnimatedListView extends StatefulWidget {
-  AnimatedListView({
-    this.key,
+  const AnimatedListView({
+    Key? key,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -17,6 +17,7 @@ class AnimatedListView extends StatefulWidget {
     this.shrinkWrap = false,
     this.padding,
     this.itemExtent,
+    this.prototypeItem,
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
@@ -24,38 +25,44 @@ class AnimatedListView extends StatefulWidget {
     this.children = const <Widget>[],
     this.semanticChildCount,
     this.dragStartBehavior = DragStartBehavior.start,
+    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.customAnimation,
     this.duration,
-  });
+    this.restorationId,
+    this.clipBehavior = Clip.hardEdge,
+  }) : super(key: key);
 
-  final Key key;
   final Axis scrollDirection;
   final bool reverse;
-  final ScrollController controller;
-  final bool primary;
-  final ScrollPhysics physics;
+  final ScrollController? controller;
+  final bool? primary;
+  final ScrollPhysics? physics;
   final bool shrinkWrap;
-  final EdgeInsetsGeometry padding;
-  final double itemExtent;
+  final EdgeInsetsGeometry? padding;
+  final double? itemExtent;
+  final Widget? prototypeItem;
   final bool addAutomaticKeepAlives;
   final bool addRepaintBoundaries;
   final bool addSemanticIndexes;
-  final double cacheExtent;
+  final double? cacheExtent;
   final List<Widget> children;
-  final int semanticChildCount;
+  final int? semanticChildCount;
   final DragStartBehavior dragStartBehavior;
-  final CustomAnimation customAnimation;
-  final Duration duration;
+  final CustomAnimation? customAnimation;
+  final Duration? duration;
+  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
+  final String? restorationId;
+  final Clip clipBehavior;
 
   @override
-  _AnimatedListViewState createState() => _AnimatedListViewState();
+  State<AnimatedListView> createState() => _AnimatedListViewState();
 }
 
 class _AnimatedListViewState extends State<AnimatedListView> {
-  final _previousChildren = <Widget>[];
-  final _toRemove = <Key>[];
-  final _toAdd = <Key>[];
-  CustomAnimation _customAnimation;
+  final List<Widget> _previousChildren = <Widget>[];
+  final List<Key> _toRemove = <Key>[];
+  final List<Key> _toAdd = <Key>[];
+  late CustomAnimation _customAnimation;
 
   @override
   void initState() {
@@ -65,16 +72,16 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   }
 
   Widget _defaultAnimation({
-    @required Widget child,
-    @required Animation<double> animation,
-    @required bool appearing,
+    required Widget child,
+    required Animation<double> animation,
+    required bool appearing,
   }) {
-    final _curvedAnimation = appearing
+    final CurvedAnimation curvedAnimation = appearing
         ? CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)
         : CurvedAnimation(parent: animation, curve: Curves.easeInCubic.flipped);
 
     return SizeTransition(
-      sizeFactor: _curvedAnimation,
+      sizeFactor: curvedAnimation,
       axis: widget.scrollDirection,
       child: child,
     );
@@ -82,39 +89,39 @@ class _AnimatedListViewState extends State<AnimatedListView> {
 
   @override
   Widget build(BuildContext context) {
-    List<Key> _lastChildrenKeys =
-        _previousChildren.map((child) => child.key).toList();
+    final List<Key> lastChildrenKeys =
+        _previousChildren.map((Widget child) => child.key!).toList();
 
-    List<Key> _currentChildrenKeys =
-        widget.children.map((child) => child.key).toList();
+    final List<Key> currentChildrenKeys =
+        widget.children.map((Widget child) => child.key!).toList();
 
-    _currentChildrenKeys.forEach((key) {
-      if (!_lastChildrenKeys.contains(key)) {
+    for (final Key key in currentChildrenKeys) {
+      if (!lastChildrenKeys.contains(key)) {
         if (!_toAdd.contains(key)) {
           _toAdd.add(key);
         }
       }
-    });
+    }
 
-    _lastChildrenKeys.forEach((key) {
-      if (!_currentChildrenKeys.contains(key)) {
+    for (final Key key in lastChildrenKeys) {
+      if (!currentChildrenKeys.contains(key)) {
         if (!_toRemove.contains(key)) {
           _toRemove.add(key);
         }
       }
-    });
+    }
 
-    final merged = mergeChanges<Widget>(
+    final List<Widget> merged = mergeChanges<Widget>(
       _previousChildren,
       widget.children,
-      isEqual: (a, b) => a.key == b.key,
+      isEqual: (Widget a, Widget b) => a.key == b.key,
     );
 
     _previousChildren.clear();
     _previousChildren.addAll(merged);
 
-    final wrappedChildren =
-        merged.map((child) => _buildAnimated(child)).toList();
+    final List<Widget> wrappedChildren =
+        merged.map((Widget child) => buildAnimatedItem(child)).toList();
 
     return ListView(
       key: widget.key,
@@ -126,19 +133,23 @@ class _AnimatedListViewState extends State<AnimatedListView> {
       shrinkWrap: widget.shrinkWrap,
       padding: widget.padding,
       itemExtent: widget.itemExtent,
+      prototypeItem: widget.prototypeItem,
       addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
       addRepaintBoundaries: widget.addRepaintBoundaries,
       addSemanticIndexes: widget.addSemanticIndexes,
       cacheExtent: widget.cacheExtent,
-      children: wrappedChildren,
       semanticChildCount: widget.semanticChildCount,
       dragStartBehavior: widget.dragStartBehavior,
+      keyboardDismissBehavior: widget.keyboardDismissBehavior,
+      restorationId: widget.restorationId,
+      clipBehavior: widget.clipBehavior,
+      children: wrappedChildren,
     );
   }
 
-  Widget _buildAnimated(Widget child) {
-    final mustDelete = _toRemove.contains(child.key);
-    final mustAdd = _toAdd.contains(child.key);
+  Widget buildAnimatedItem(Widget child) {
+    final bool mustDelete = _toRemove.contains(child.key);
+    final bool mustAdd = _toAdd.contains(child.key);
 
     if (mustDelete) {
       return ShowAnimated(
@@ -158,7 +169,6 @@ class _AnimatedListViewState extends State<AnimatedListView> {
         key: child.key,
         customAnimation: _customAnimation,
         duration: widget.duration,
-        appearing: true,
         onAnimationComplete: () {
           _toAdd.remove(child.key);
           setState(() {});

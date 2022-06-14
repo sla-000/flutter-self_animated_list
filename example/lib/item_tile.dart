@@ -34,28 +34,28 @@ class ItemTile extends StatelessWidget {
           Align(
             alignment: Alignment.topLeft,
             child: IconButton(
-              icon: Icon(Icons.plus_one),
+              icon: const Icon(Icons.plus_one),
               onPressed: onAddBefore,
             ),
           ),
           Align(
             alignment: Alignment.topRight,
             child: IconButton(
-              icon: Icon(Icons.delete_forever),
+              icon: const Icon(Icons.delete_forever),
               onPressed: onDelete,
             ),
           ),
           Align(
             alignment: Alignment.bottomRight,
             child: IconButton(
-              icon: Icon(Icons.plus_one),
+              icon: const Icon(Icons.plus_one),
               onPressed: onAddAfter,
             ),
           ),
           Align(
             alignment: Alignment.bottomLeft,
             child: IconButton(
-              icon: Icon(Icons.delete_forever),
+              icon: const Icon(Icons.delete_forever),
               onPressed: onDelete,
             ),
           ),

@@ -1,15 +1,17 @@
-import 'package:animated_list_view/animated_list_view.dart';
+import 'package:animated_list_view/animated_lists.dart';
 import 'package:collection/collection.dart';
 import 'package:example/item_model.dart';
 import 'package:example/item_tile.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 const double kTileWidth = 150;
 const double kTileHeight = 120;
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,16 +19,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -69,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Test AnimatedListView"),
+        title: const Text("Test AnimatedListView"),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -77,10 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(
             height: kTileHeight,
             child: AnimatedListView(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
+              duration: const Duration(milliseconds: 1500),
               children: _buildWidgets(_horizontalItems),
-              duration: Duration(milliseconds: 1500),
             ),
           ),
           Container(
@@ -93,13 +95,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   width: kTileWidth,
                   child: AnimatedListView(
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.vertical,
-                    children: _buildWidgets(_verticalItems),
                     customAnimation: _customAnimation,
+                    children: _buildWidgets(_verticalItems),
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   child: Center(),
                 ),
               ],

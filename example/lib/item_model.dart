@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class ItemModel {
-  ItemModel(this.value) : this.color = _getRandomColor();
+  ItemModel(this.value) : color = _getRandomColor();
 
   final int value;
   final Color color;
