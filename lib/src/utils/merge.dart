@@ -6,10 +6,9 @@ List<T> mergeChanges<T>(
   List<T> list2, {
   bool Function(T x1, T x2) isEqual = _isEqualDefault,
 }) {
-  assert(list1 != null);
-  assert(list2 != null);
-
   final List<T> rez = <T>[];
+  list1 = List<T>.unmodifiable(Set<T>.unmodifiable(list1));
+  list2 = List<T>.unmodifiable(Set<T>.unmodifiable(list2));
 
   int index1 = 0;
   int index2 = 0;

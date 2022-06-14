@@ -104,11 +104,46 @@ void main() {
           ]);
     });
 
-    test('Test merge duplicates', () {
-      final List<int> x = <int>[1, 2, 3, 5, 6];
-      final List<int> y = <int>[2, 3, 3, 6, 7, 8];
+    test('Test merge duplicates in 1', () {
+      final List<int> x = <int>[1, 2, 3, 5, 5, 5, 6];
+      final List<int> y = <int>[2, 3, 6, 7, 8];
 
       expect(mergeChanges(x, y), <int>[1, 2, 3, 5, 6, 7, 8]);
+    });
+
+    test('Test merge duplicates in 2', () {
+      final List<int> x = <int>[1, 2, 3, 5, 6];
+      final List<int> y = <int>[2, 3, 3, 3, 3, 6, 7, 8];
+
+      expect(mergeChanges(x, y), <int>[1, 2, 3, 5, 6, 7, 8]);
+    });
+
+    test('Test merge duplicates in both', () {
+      final List<int> x = <int>[1, 1, 1, 2, 3, 5, 5, 5, 6];
+      final List<int> y = <int>[2, 2, 3, 3, 3, 3, 6, 7, 8, 8, 8, 4, 4];
+
+      expect(mergeChanges(x, y), <int>[1, 2, 3, 5, 6, 7, 8, 4]);
+    });
+
+    test('Test merge append', () {
+      final List<int> x = <int>[1, 2, 3, 5, 6, 4];
+      final List<int> y = <int>[2, 3, 6, 7, 8];
+
+      expect(mergeChanges(x, y), <int>[1, 2, 3, 5, 6, 4, 7, 8]);
+    });
+
+    test('Test merge append 2', () {
+      final List<int> x = <int>[2, 3, 6, 7, 8, 9, 10];
+      final List<int> y = <int>[1, 2, 3, 5, 6, 4, 11, 12];
+
+      expect(mergeChanges(x, y), <int>[1, 2, 3, 5, 6, 7, 4, 8, 11, 9, 12, 10]);
+    });
+
+    test('Test merge append 3', () {
+      final List<int> x = <int>[1, 2, 3, 5, 6, 4, 11, 12];
+      final List<int> y = <int>[2, 3, 6, 7, 8, 9, 10];
+
+      expect(mergeChanges(x, y), <int>[1, 2, 3, 5, 6, 4, 7, 11, 8, 12, 9, 10]);
     });
   });
 }
