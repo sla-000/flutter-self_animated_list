@@ -10,7 +10,7 @@ const double kTileWidth = 150;
 const double kTileHeight = 120;
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -113,9 +113,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _customAnimation({
-    @required Widget child,
-    @required Animation<double> animation,
-    @required bool appearing,
+    required Widget child,
+    required Animation<double> animation,
+    required bool appearing,
   }) {
     if (appearing) {
       final curvedAnimation =

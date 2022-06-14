@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class ItemTile extends StatelessWidget {
   ItemTile({
-    Key key,
-    @required this.value,
-    @required this.color,
-    @required this.onAddBefore,
-    @required this.onAddAfter,
-    @required this.onDelete,
+    Key? key,
+    required this.value,
+    required this.color,
+    required this.onAddBefore,
+    required this.onAddAfter,
+    required this.onDelete,
     this.vertical = true,
   })  : _key = key.toString(),
         super(key: key);
