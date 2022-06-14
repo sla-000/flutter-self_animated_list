@@ -1,13 +1,12 @@
 import 'package:animated_list_view/animated_lists.dart';
 import 'package:collection/collection.dart';
-import 'package:example/item_model.dart';
-import 'package:example/item_tile.dart';
+import 'package:example/logic/list_cubit.dart';
+import 'package:example/model/item_model.dart';
+import 'package:example/ui/item_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() => runApp(const MyApp());
-
-const double kTileWidth = 150;
-const double kTileHeight = 120;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -32,40 +31,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _horizontalItems =
-      List<ItemModel>.generate(10, (_) => ItemModel(getRandomKey()));
-  final _verticalItems =
-      List<ItemModel>.generate(10, (_) => ItemModel(getRandomKey()));
-
-  List<Widget> _buildWidgets(List<ItemModel> items) => items
-      .mapIndexed(
-        (index, item) => SizedBox(
-          width: kTileWidth,
-          height: kTileHeight,
-          child: ItemTile(
-            key: ValueKey(item.value),
-            value: index + 1,
-            color: item.color,
-            vertical: false,
-            onDelete: () {
-              setState(() {
-                items.removeAt(index);
-              });
-            },
-            onAddAfter: () {
-              setState(() {
-                items.insert(index + 1, ItemModel(getRandomKey()));
-              });
-            },
-            onAddBefore: () {
-              setState(() {
-                items.insert(index, ItemModel(getRandomKey()));
-              });
-            },
-          ),
-        ),
-      )
-      .toList();
+  final ListCubit _horizontalCubit = ListCubit();
+  final ListCubit _verticalCubit = ListCubit();
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +45,16 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           SizedBox(
             height: kTileHeight,
-            child: AnimatedListView(
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              duration: const Duration(milliseconds: 1500),
-              children: _buildWidgets(_horizontalItems),
+            child: BlocBuilder<ListCubit, List<ItemModel>>(
+              bloc: _horizontalCubit,
+              builder: (BuildContext context, List<ItemModel> state) {
+                return AnimatedListView(
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  duration: const Duration(milliseconds: 1500),
+                  children: buildWidgets(state),
+                );
+              },
             ),
           ),
           Container(
@@ -94,15 +66,73 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 SizedBox(
                   width: kTileWidth,
-                  child: AnimatedListView(
+                  child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    customAnimation: _customAnimation,
-                    children: _buildWidgets(_verticalItems),
+                    child: BlocBuilder<ListCubit, List<ItemModel>>(
+                      bloc: _verticalCubit,
+                      builder: (BuildContext context, List<ItemModel> state) {
+                        return AnimatedFlex(
+                          direction: Axis.vertical,
+                          customAnimation: _customAnimation,
+                          children: buildWidgets(state),
+                        );
+                      },
+                    ),
                   ),
                 ),
-                const Expanded(
-                  child: Center(),
+                Expanded(
+                  child: Center(
+                    child: SizedBox(
+                      width: 200,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '+X',
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                              Expanded(
+                                child: Slider(
+                                  min: 0,
+                                  max: 5,
+                                  divisions: 5,
+                                  value: 0,
+                                  onChanged: (double value) {},
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '-X',
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                              Expanded(
+                                child: Slider(
+                                  min: 0,
+                                  max: 5,
+                                  divisions: 5,
+                                  value: 0,
+                                  onChanged: (double value) {},
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: const Text('Update'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -143,4 +173,32 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
   }
+}
+
+List<Widget> buildWidgets(Iterable<ItemModel> items) {
+  return items
+      .mapIndexed(
+        (index, item) => ItemTile(
+          key: ValueKey(item.value),
+          value: index + 1,
+          color: item.color,
+          vertical: false,
+          onDelete: () {
+            // setState(() {
+            //   items.removeAt(index);
+            // });
+          },
+          onAddAfter: () {
+            // setState(() {
+            //   items.insert(index + 1, ItemModel(getRandomKey()));
+            // });
+          },
+          onAddBefore: () {
+            // setState(() {
+            //   items.insert(index, ItemModel(getRandomKey()));
+            // });
+          },
+        ),
+      )
+      .toList();
 }

@@ -11,10 +11,12 @@ dependencies:
     path: ../
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.0.1
   collection: ^1.16.0
   cupertino_icons: ^0.1.2
 
 dev_dependencies:
+  build_runner: ^2.1.11
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter

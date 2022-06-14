@@ -1,64 +1,43 @@
 library animated_list_view;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'utils/merge.dart';
 import 'widgets/animated_widget.dart';
 
-class AnimatedListView extends StatefulWidget {
-  const AnimatedListView({
+class AnimatedFlex extends StatefulWidget {
+  const AnimatedFlex({
     Key? key,
-    this.scrollDirection = Axis.vertical,
-    this.reverse = false,
-    this.controller,
-    this.primary,
-    this.physics,
-    this.shrinkWrap = false,
-    this.padding,
-    this.itemExtent,
-    this.prototypeItem,
-    this.addAutomaticKeepAlives = true,
-    this.addRepaintBoundaries = true,
-    this.addSemanticIndexes = true,
-    this.cacheExtent,
-    this.children = const <Widget>[],
-    this.semanticChildCount,
-    this.dragStartBehavior = DragStartBehavior.start,
-    this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
+    required this.direction,
+    this.mainAxisAlignment = MainAxisAlignment.start,
+    this.mainAxisSize = MainAxisSize.max,
+    this.crossAxisAlignment = CrossAxisAlignment.center,
+    this.textDirection,
+    this.verticalDirection = VerticalDirection.down,
+    this.textBaseline, // NO DEFAULT: we don't know what the text's baseline should be
+    this.clipBehavior = Clip.none,
     this.customAnimation,
     this.duration,
-    this.restorationId,
-    this.clipBehavior = Clip.hardEdge,
+    this.children = const <Widget>[],
   }) : super(key: key);
 
-  final Axis scrollDirection;
-  final bool reverse;
-  final ScrollController? controller;
-  final bool? primary;
-  final ScrollPhysics? physics;
-  final bool shrinkWrap;
-  final EdgeInsetsGeometry? padding;
-  final double? itemExtent;
-  final Widget? prototypeItem;
-  final bool addAutomaticKeepAlives;
-  final bool addRepaintBoundaries;
-  final bool addSemanticIndexes;
-  final double? cacheExtent;
-  final List<Widget> children;
-  final int? semanticChildCount;
-  final DragStartBehavior dragStartBehavior;
+  final Axis direction;
+  final MainAxisAlignment mainAxisAlignment;
+  final MainAxisSize mainAxisSize;
+  final CrossAxisAlignment crossAxisAlignment;
+  final TextDirection? textDirection;
+  final VerticalDirection verticalDirection;
+  final TextBaseline? textBaseline;
+  final Clip clipBehavior;
   final CustomAnimation? customAnimation;
   final Duration? duration;
-  final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
-  final String? restorationId;
-  final Clip clipBehavior;
+  final List<Widget> children;
 
   @override
-  State<AnimatedListView> createState() => _AnimatedListViewState();
+  State<AnimatedFlex> createState() => _AnimatedFlexState();
 }
 
-class _AnimatedListViewState extends State<AnimatedListView> {
+class _AnimatedFlexState extends State<AnimatedFlex> {
   final List<Widget> _previousChildren = <Widget>[];
   final List<Key> _keysToRemove = <Key>[];
   final List<Key> _toAdd = <Key>[];
@@ -82,7 +61,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
 
     return SizeTransition(
       sizeFactor: curvedAnimation,
-      axis: widget.scrollDirection,
+      axis: widget.direction,
       child: child,
     );
   }
@@ -123,25 +102,15 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     final List<Widget> wrappedChildren =
         merged.map((Widget child) => buildAnimatedItem(child)).toList();
 
-    return ListView(
+    return Flex(
       key: widget.key,
-      scrollDirection: widget.scrollDirection,
-      reverse: widget.reverse,
-      controller: widget.controller,
-      primary: widget.primary,
-      physics: widget.physics,
-      shrinkWrap: widget.shrinkWrap,
-      padding: widget.padding,
-      itemExtent: widget.itemExtent,
-      prototypeItem: widget.prototypeItem,
-      addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
-      addRepaintBoundaries: widget.addRepaintBoundaries,
-      addSemanticIndexes: widget.addSemanticIndexes,
-      cacheExtent: widget.cacheExtent,
-      semanticChildCount: widget.semanticChildCount,
-      dragStartBehavior: widget.dragStartBehavior,
-      keyboardDismissBehavior: widget.keyboardDismissBehavior,
-      restorationId: widget.restorationId,
+      direction: widget.direction,
+      mainAxisAlignment: widget.mainAxisAlignment,
+      mainAxisSize: widget.mainAxisSize,
+      crossAxisAlignment: widget.crossAxisAlignment,
+      textDirection: widget.textDirection,
+      verticalDirection: widget.verticalDirection,
+      textBaseline: widget.textBaseline,
       clipBehavior: widget.clipBehavior,
       children: wrappedChildren,
     );
