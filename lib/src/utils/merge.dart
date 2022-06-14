@@ -27,11 +27,21 @@ List<T> mergeChanges<T>(
           list2.indexWhere((T value) => isEqual(value, list1[index1]));
 
       if (find2in1index != -1 && find1in2index == -1) {
-        rez.addAll(list1.sublist(index1, find2in1index));
-        index1 = find2in1index;
+        if (find2in1index >= index1) {
+          rez.addAll(list1.sublist(index1, find2in1index));
+          index1 = find2in1index;
+        } else {
+          rez.add(list1[index1]);
+          index1++;
+        }
       } else if (find2in1index == -1 && find1in2index != -1) {
-        rez.addAll(list2.sublist(index2, find1in2index));
-        index2 = find1in2index;
+        if (find1in2index >= index2) {
+          rez.addAll(list2.sublist(index2, find1in2index));
+          index2 = find1in2index;
+        } else {
+          rez.add(list1[index2]);
+          index2++;
+        }
       } else if (find2in1index != -1 && find1in2index != -1) {
         ++index1;
         ++index2;
