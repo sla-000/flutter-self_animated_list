@@ -1,8 +1,7 @@
-library animated_list_view;
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'custom_animation.dart';
 import 'utils/merge.dart';
 import 'widgets/animated_widget.dart';
 
@@ -74,9 +73,9 @@ class _AnimatedListViewState extends State<AnimatedListView> {
   Widget _defaultAnimation({
     required Widget child,
     required Animation<double> animation,
-    required bool appearing,
+    required ShowState state,
   }) {
-    final CurvedAnimation curvedAnimation = appearing
+    final CurvedAnimation curvedAnimation = state == ShowState.show
         ? CurvedAnimation(parent: animation, curve: Curves.linear)
         : CurvedAnimation(parent: animation, curve: Curves.linear.flipped);
 
@@ -121,7 +120,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     _previousChildren.addAll(merged);
 
     final List<Widget> wrappedChildren =
-        merged.map((Widget child) => buildAnimatedItem(child)).toList();
+        merged.map((Widget child) => _buildAnimatedItem(child)).toList();
 
     return ListView(
       key: widget.key,
@@ -147,7 +146,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     );
   }
 
-  Widget buildAnimatedItem(Widget child) {
+  Widget _buildAnimatedItem(Widget child) {
     final bool mustDelete = _keysToRemove.contains(child.key);
     final bool mustAdd = _toAdd.contains(child.key);
 
@@ -156,7 +155,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
         key: child.key,
         customAnimation: _customAnimation,
         duration: widget.duration,
-        appearing: false,
+        state: ShowState.hide,
         onAnimationComplete: () {
           _previousChildren.remove(child);
           _keysToRemove.remove(child.key);
@@ -169,6 +168,7 @@ class _AnimatedListViewState extends State<AnimatedListView> {
         key: child.key,
         customAnimation: _customAnimation,
         duration: widget.duration,
+        state: ShowState.show,
         onAnimationComplete: () {
           _toAdd.remove(child.key);
           setState(() {});

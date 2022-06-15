@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 
-typedef CustomAnimation = Widget Function({
-  required Widget child,
-  required Animation<double> animation,
-  required bool appearing,
-});
+import '../custom_animation.dart';
 
 class ShowAnimated extends StatefulWidget {
   const ShowAnimated({
     Key? key,
     required this.child,
     this.onAnimationComplete,
-    this.appearing = true,
+    required this.state,
     Duration? duration,
     required this.customAnimation,
   })  : _duration = duration ?? const Duration(milliseconds: 800),
         super(key: key);
 
   final Widget child;
-  final bool appearing;
+  final ShowState state;
   final void Function()? onAnimationComplete;
   final Duration _duration;
   final CustomAnimation customAnimation;
@@ -48,15 +44,13 @@ class _ShowAnimatedState extends State<ShowAnimated>
       }
     });
 
-    if (widget.appearing) {
-      _animationController.forward(from: 0.0).whenCompleteOrCancel(() {
-        widget.onAnimationComplete?.call();
-      });
-    } else {
-      _animationController.reverse(from: 1.0).whenCompleteOrCancel(() {
-        widget.onAnimationComplete?.call();
-      });
-    }
+    widget.state == ShowState.show
+        ? _animationController.forward(from: 0.0).whenCompleteOrCancel(() {
+            widget.onAnimationComplete?.call();
+          })
+        : _animationController.reverse(from: 1.0).whenCompleteOrCancel(() {
+            widget.onAnimationComplete?.call();
+          });
   }
 
   @override
@@ -69,8 +63,9 @@ class _ShowAnimatedState extends State<ShowAnimated>
   @override
   Widget build(BuildContext context) {
     return widget.customAnimation(
-        child: widget.child,
-        animation: _animation,
-        appearing: widget.appearing);
+      child: widget.child,
+      animation: _animation,
+      state: widget.state,
+    );
   }
 }

@@ -1,7 +1,6 @@
-library animated_list_view;
-
 import 'package:flutter/material.dart';
 
+import 'custom_animation.dart';
 import 'utils/merge.dart';
 import 'widgets/animated_widget.dart';
 
@@ -40,22 +39,29 @@ class AnimatedFlex extends StatefulWidget {
 class _AnimatedFlexState extends State<AnimatedFlex> {
   final List<Widget> _previousChildren = <Widget>[];
   final List<Key> _keysToRemove = <Key>[];
-  final List<Key> _toAdd = <Key>[];
-  late CustomAnimation _customAnimation;
+  final List<Key> _keysToAdd = <Key>[];
+  late CustomAnimation _animation;
 
   @override
   void initState() {
     super.initState();
 
-    _customAnimation = widget.customAnimation ?? _defaultAnimation;
+    _animation = widget.customAnimation ?? _defaultAnimation;
+  }
+
+  @override
+  void didUpdateWidget(AnimatedFlex oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _animation = widget.customAnimation ?? _defaultAnimation;
   }
 
   Widget _defaultAnimation({
     required Widget child,
     required Animation<double> animation,
-    required bool appearing,
+    required ShowState state,
   }) {
-    final CurvedAnimation curvedAnimation = appearing
+    final CurvedAnimation curvedAnimation = state == ShowState.show
         ? CurvedAnimation(parent: animation, curve: Curves.linear)
         : CurvedAnimation(parent: animation, curve: Curves.linear.flipped);
 
@@ -76,8 +82,8 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
 
     for (final Key key in currentChildrenKeys) {
       if (!lastChildrenKeys.contains(key)) {
-        if (!_toAdd.contains(key)) {
-          _toAdd.add(key);
+        if (!_keysToAdd.contains(key)) {
+          _keysToAdd.add(key);
         }
       }
     }
@@ -100,7 +106,7 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     _previousChildren.addAll(merged);
 
     final List<Widget> wrappedChildren =
-        merged.map((Widget child) => buildAnimatedItem(child)).toList();
+        merged.map((Widget child) => _buildAnimatedItem(child)).toList();
 
     return Flex(
       key: widget.key,
@@ -116,16 +122,16 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     );
   }
 
-  Widget buildAnimatedItem(Widget child) {
+  Widget _buildAnimatedItem(Widget child) {
     final bool mustDelete = _keysToRemove.contains(child.key);
-    final bool mustAdd = _toAdd.contains(child.key);
+    final bool mustAdd = _keysToAdd.contains(child.key);
 
     if (mustDelete) {
       return ShowAnimated(
         key: child.key,
-        customAnimation: _customAnimation,
+        customAnimation: _animation,
         duration: widget.duration,
-        appearing: false,
+        state: ShowState.hide,
         onAnimationComplete: () {
           _previousChildren.remove(child);
           _keysToRemove.remove(child.key);
@@ -136,10 +142,11 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     } else if (mustAdd) {
       return ShowAnimated(
         key: child.key,
-        customAnimation: _customAnimation,
+        customAnimation: _animation,
         duration: widget.duration,
+        state: ShowState.show,
         onAnimationComplete: () {
-          _toAdd.remove(child.key);
+          _keysToAdd.remove(child.key);
           setState(() {});
         },
         child: child,
