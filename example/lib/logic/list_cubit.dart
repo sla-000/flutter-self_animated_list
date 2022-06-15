@@ -36,4 +36,20 @@ class ListCubit extends Cubit<List<ItemModel>> {
 
     emit(List<ItemModel>.unmodifiable(newList));
   }
+
+  void addOne(int index) {
+    List<ItemModel> newList = List<ItemModel>.of(state);
+
+    newList.insert(index, ItemModel(getRandomKey()));
+
+    emit(List<ItemModel>.unmodifiable(newList));
+  }
+
+  void removeOne(int index) {
+    List<ItemModel> newList = List<ItemModel>.of(state);
+
+    newList.removeAt(index);
+
+    emit(List<ItemModel>.unmodifiable(newList));
+  }
 }

@@ -1,5 +1,4 @@
 import 'package:animated_list_view/animated_lists.dart';
-import 'package:collection/collection.dart';
 import 'package:example/logic/list_cubit.dart';
 import 'package:example/model/item_model.dart';
 import 'package:example/ui/custom_animation.dart';
@@ -146,26 +145,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
 List<Widget> buildWidgets(Iterable<ItemModel> items) {
   return items
-      .mapIndexed(
-        (int index, ItemModel item) => ItemTile(
+      .map(
+        (ItemModel item) => ItemTile(
           key: ValueKey(item.value),
           color: item.color,
-          vertical: false,
-          onDelete: () {
-            // setState(() {
-            //   items.removeAt(index);
-            // });
-          },
-          onAddAfter: () {
-            // setState(() {
-            //   items.insert(index + 1, ItemModel(getRandomKey()));
-            // });
-          },
-          onAddBefore: () {
-            // setState(() {
-            //   items.insert(index, ItemModel(getRandomKey()));
-            // });
-          },
         ),
       )
       .toList();
