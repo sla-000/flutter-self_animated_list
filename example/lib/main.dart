@@ -2,7 +2,9 @@ import 'package:animated_list_view/animated_lists.dart';
 import 'package:collection/collection.dart';
 import 'package:example/logic/list_cubit.dart';
 import 'package:example/model/item_model.dart';
+import 'package:example/ui/custom_animation.dart';
 import 'package:example/ui/item_tile.dart';
+import 'package:example/ui/slider_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,10 +33,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final ListCubit _horizontalCubit = ListCubit();
-  final ListCubit _verticalCubit = ListCubit();
-  int _toRemove = 0;
-  int _toAdd = 0;
+  late final ListCubit _horizontalCubit = ListCubit(
+      MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3);
+  late final ListCubit _verticalCubit = ListCubit(
+      MediaQuery.of(context).orientation == Orientation.portrait ? 5 : 3);
+  int _toRemove = 2;
+  int _toAdd = 2;
 
   @override
   void dispose() {
@@ -61,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return AnimatedListView(
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  duration: const Duration(milliseconds: 1500),
+                  duration: const Duration(milliseconds: 1000),
                   children: buildWidgets(state),
                 );
               },
@@ -73,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Expanded(
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SizedBox(
                   width: kTileWidth,
@@ -82,8 +87,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       bloc: _verticalCubit,
                       builder: (BuildContext context, List<ItemModel> state) {
                         return AnimatedFlex(
+                          mainAxisSize: MainAxisSize.min,
                           direction: Axis.vertical,
-                          customAnimation: _customAnimation,
+                          customAnimation: customAnimation,
+                          duration: const Duration(milliseconds: 1200),
                           children: buildWidgets(state),
                         );
                       },
@@ -97,55 +104,26 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '+$_toAdd',
-                                style: Theme.of(context).textTheme.headline5,
-                              ),
-                              Expanded(
-                                child: Slider(
-                                  min: 0,
-                                  max: 5,
-                                  divisions: 5,
-                                  value: _toAdd.toDouble(),
-                                  onChanged: (double value) {
-                                    setState(() {
-                                      _toAdd = value.round();
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
+                          SliderValue(
+                            prefix: '+',
+                            readValue: () => _toAdd,
+                            onChange: (int value) => _toAdd = value.round(),
                           ),
                           const SizedBox(height: 16),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                '-$_toRemove',
-                                style: Theme.of(context).textTheme.headline5,
-                              ),
-                              Expanded(
-                                child: Slider(
-                                  min: 0,
-                                  max: 5,
-                                  divisions: 5,
-                                  value: _toRemove.toDouble(),
-                                  onChanged: (double value) {
-                                    setState(() {
-                                      _toRemove = value.round();
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
+                          SliderValue(
+                            prefix: '-',
+                            readValue: () => _toRemove,
+                            onChange: (int value) => _toRemove = value.round(),
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
                               _horizontalCubit.update(
+                                toAdd: _toAdd,
+                                toRemove: _toRemove,
+                              );
+
+                              _verticalCubit.update(
                                 toAdd: _toAdd,
                                 toRemove: _toRemove,
                               );
@@ -164,46 +142,13 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-  Widget _customAnimation({
-    required Widget child,
-    required Animation<double> animation,
-    required bool appearing,
-  }) {
-    if (appearing) {
-      final curvedAnimation =
-          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
-
-      return SizeTransition(
-        sizeFactor: curvedAnimation,
-        axis: Axis.vertical,
-        child: child,
-      );
-    } else {
-      final sizeAnimation =
-          CurvedAnimation(parent: animation, curve: Curves.bounceOut.flipped);
-
-      final opacityAnimation =
-          CurvedAnimation(parent: animation, curve: Curves.easeInExpo.flipped);
-
-      return SizeTransition(
-        sizeFactor: sizeAnimation,
-        axis: Axis.vertical,
-        child: Opacity(
-          opacity: opacityAnimation.value,
-          child: child,
-        ),
-      );
-    }
-  }
 }
 
 List<Widget> buildWidgets(Iterable<ItemModel> items) {
   return items
       .mapIndexed(
-        (index, item) => ItemTile(
+        (int index, ItemModel item) => ItemTile(
           key: ValueKey(item.value),
-          value: index + 1,
           color: item.color,
           vertical: false,
           onDelete: () {

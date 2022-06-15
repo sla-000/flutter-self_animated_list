@@ -4,10 +4,10 @@ import 'package:example/model/item_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ListCubit extends Cubit<List<ItemModel>> {
-  ListCubit()
+  ListCubit([int count = 5])
       : super(
           List<ItemModel>.generate(
-            10,
+            count,
             (_) => ItemModel(getRandomKey()),
           ),
         );

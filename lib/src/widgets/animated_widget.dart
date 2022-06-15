@@ -14,7 +14,7 @@ class ShowAnimated extends StatefulWidget {
     this.appearing = true,
     Duration? duration,
     required this.customAnimation,
-  })  : _duration = duration ?? const Duration(milliseconds: 500),
+  })  : _duration = duration ?? const Duration(milliseconds: 800),
         super(key: key);
 
   final Widget child;

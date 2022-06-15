@@ -56,8 +56,8 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     required bool appearing,
   }) {
     final CurvedAnimation curvedAnimation = appearing
-        ? CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)
-        : CurvedAnimation(parent: animation, curve: Curves.easeInCubic.flipped);
+        ? CurvedAnimation(parent: animation, curve: Curves.linear)
+        : CurvedAnimation(parent: animation, curve: Curves.linear.flipped);
 
     return SizeTransition(
       sizeFactor: curvedAnimation,

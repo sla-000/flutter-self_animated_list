@@ -6,7 +6,6 @@ const double kTileHeight = 120;
 class ItemTile extends StatelessWidget {
   ItemTile({
     Key? key,
-    required this.value,
     required this.color,
     required this.onAddBefore,
     required this.onAddAfter,
@@ -16,7 +15,6 @@ class ItemTile extends StatelessWidget {
         super(key: key);
 
   final String _key;
-  final int value;
   final Color color;
   final bool vertical;
 
@@ -26,6 +24,8 @@ class ItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final paddedKey = _key.padLeft(25);
+
     return SizedBox(
       width: kTileWidth,
       height: kTileHeight,
@@ -35,7 +35,8 @@ class ItemTile extends StatelessWidget {
           children: <Widget>[
             Align(
               alignment: Alignment.center,
-              child: Text("Tile #$value\nKey: ${_key.substring(2, 10)}"),
+              child: Text(
+                  "Key: ${paddedKey.substring(paddedKey.length - 8, paddedKey.length - 2)}"),
             ),
             Align(
               alignment: Alignment.topLeft,
