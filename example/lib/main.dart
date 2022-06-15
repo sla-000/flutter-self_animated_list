@@ -33,6 +33,16 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final ListCubit _horizontalCubit = ListCubit();
   final ListCubit _verticalCubit = ListCubit();
+  int _toRemove = 0;
+  int _toAdd = 0;
+
+  @override
+  void dispose() {
+    _horizontalCubit.close();
+    _verticalCubit.close();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                '+X',
+                                '+$_toAdd',
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                               Expanded(
@@ -99,8 +109,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   min: 0,
                                   max: 5,
                                   divisions: 5,
-                                  value: 0,
-                                  onChanged: (double value) {},
+                                  value: _toAdd.toDouble(),
+                                  onChanged: (double value) {
+                                    setState(() {
+                                      _toAdd = value.round();
+                                    });
+                                  },
                                 ),
                               ),
                             ],
@@ -110,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                '-X',
+                                '-$_toRemove',
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                               Expanded(
@@ -118,15 +132,24 @@ class _MyHomePageState extends State<MyHomePage> {
                                   min: 0,
                                   max: 5,
                                   divisions: 5,
-                                  value: 0,
-                                  onChanged: (double value) {},
+                                  value: _toRemove.toDouble(),
+                                  onChanged: (double value) {
+                                    setState(() {
+                                      _toRemove = value.round();
+                                    });
+                                  },
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _horizontalCubit.update(
+                                toAdd: _toAdd,
+                                toRemove: _toRemove,
+                              );
+                            },
                             child: const Text('Update'),
                           ),
                         ],
