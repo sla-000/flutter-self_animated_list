@@ -41,10 +41,10 @@ class _ShowAnimatedState extends State<ShowAnimated>
 
   void _updateAnimation() {
     widget.state == ShowState.show
-        ? _animationController.animateTo(1.0).whenCompleteOrCancel(() {
+        ? _animationController.forward().whenCompleteOrCancel(() {
             widget.onAnimationComplete?.call();
           })
-        : _animationController.animateBack(0.0).whenCompleteOrCancel(() {
+        : _animationController.reverse().whenCompleteOrCancel(() {
             widget.onAnimationComplete?.call();
           });
   }
