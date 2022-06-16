@@ -25,32 +25,37 @@ class ShowAnimated extends StatefulWidget {
 
 class _ShowAnimatedState extends State<ShowAnimated>
     with TickerProviderStateMixin {
-  late final Animation<double> _animation;
-  late final AnimationController _animationController;
+  late final AnimationController _animationController =
+      AnimationController(vsync: this, duration: widget._duration);
 
   @override
   void initState() {
     super.initState();
 
-    _animationController =
-        AnimationController(vsync: this, duration: widget._duration);
+    if (widget.state == ShowState.hide) {
+      _animationController.value = 1.0;
+    }
 
-    _animation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    _updateAnimation();
+  }
 
-    _animationController.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-
+  void _updateAnimation() {
     widget.state == ShowState.show
-        ? _animationController.forward(from: 0.0).whenCompleteOrCancel(() {
+        ? _animationController.animateTo(1.0).whenCompleteOrCancel(() {
             widget.onAnimationComplete?.call();
           })
-        : _animationController.reverse(from: 1.0).whenCompleteOrCancel(() {
+        : _animationController.animateBack(0.0).whenCompleteOrCancel(() {
             widget.onAnimationComplete?.call();
           });
+  }
+
+  @override
+  void didUpdateWidget(ShowAnimated oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.state != oldWidget.state) {
+      _updateAnimation();
+    }
   }
 
   @override
@@ -64,7 +69,7 @@ class _ShowAnimatedState extends State<ShowAnimated>
   Widget build(BuildContext context) {
     return widget.customAnimation(
       child: widget.child,
-      animation: _animation,
+      animation: _animationController,
       state: widget.state,
     );
   }

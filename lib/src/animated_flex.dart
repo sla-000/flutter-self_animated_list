@@ -37,7 +37,7 @@ class AnimatedFlex extends StatefulWidget {
 }
 
 class _AnimatedFlexState extends State<AnimatedFlex> {
-  final List<Widget> _previousChildren = <Widget>[];
+  final List<Widget> _mergedChildren = <Widget>[];
   final List<Key> _keysToRemove = <Key>[];
   final List<Key> _keysToAdd = <Key>[];
   late CustomAnimation _animation;
@@ -47,6 +47,8 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     super.initState();
 
     _animation = widget.customAnimation ?? _defaultAnimation;
+
+    _updateMerged();
   }
 
   @override
@@ -54,6 +56,49 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     super.didUpdateWidget(oldWidget);
 
     _animation = widget.customAnimation ?? _defaultAnimation;
+
+    _updateMerged();
+  }
+
+  void _updateMerged() {
+    final List<Key> mergedChildrenKeys =
+        _mergedChildren.map((Widget child) => child.key!).toList();
+
+    final List<Key> currentChildrenKeys =
+        widget.children.map((Widget child) => child.key!).toList();
+
+    for (final Key key in currentChildrenKeys) {
+      if (!mergedChildrenKeys.contains(key)) {
+        if (!_keysToAdd.contains(key)) {
+          _keysToAdd.add(key);
+        }
+
+        if (_keysToRemove.contains(key)) {
+          _keysToRemove.remove(key);
+        }
+      }
+    }
+
+    for (final Key key in mergedChildrenKeys) {
+      if (!currentChildrenKeys.contains(key)) {
+        if (!_keysToRemove.contains(key)) {
+          _keysToRemove.add(key);
+        }
+
+        if (_keysToAdd.contains(key)) {
+          _keysToAdd.remove(key);
+        }
+      }
+    }
+
+    final List<Widget> merged = mergeChanges<Widget>(
+      _mergedChildren,
+      widget.children,
+      isEqual: (Widget a, Widget b) => a.key == b.key,
+    );
+
+    _mergedChildren.clear();
+    _mergedChildren.addAll(merged);
   }
 
   Widget _defaultAnimation({
@@ -74,39 +119,9 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Key> lastChildrenKeys =
-        _previousChildren.map((Widget child) => child.key!).toList();
-
-    final List<Key> currentChildrenKeys =
-        widget.children.map((Widget child) => child.key!).toList();
-
-    for (final Key key in currentChildrenKeys) {
-      if (!lastChildrenKeys.contains(key)) {
-        if (!_keysToAdd.contains(key)) {
-          _keysToAdd.add(key);
-        }
-      }
-    }
-
-    for (final Key key in lastChildrenKeys) {
-      if (!currentChildrenKeys.contains(key)) {
-        if (!_keysToRemove.contains(key)) {
-          _keysToRemove.add(key);
-        }
-      }
-    }
-
-    final List<Widget> merged = mergeChanges<Widget>(
-      _previousChildren,
-      widget.children,
-      isEqual: (Widget a, Widget b) => a.key == b.key,
-    );
-
-    _previousChildren.clear();
-    _previousChildren.addAll(merged);
-
-    final List<Widget> wrappedChildren =
-        merged.map((Widget child) => _buildAnimatedItem(child)).toList();
+    final List<Widget> wrappedChildren = _mergedChildren
+        .map((Widget child) => _buildAnimatedItem(child))
+        .toList();
 
     return Flex(
       key: widget.key,
@@ -133,9 +148,16 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
         duration: widget.duration,
         state: ShowState.hide,
         onAnimationComplete: () {
-          _previousChildren.remove(child);
-          _keysToRemove.remove(child.key);
-          setState(() {});
+          setState(() {
+            if (_keysToRemove.contains(child.key)) {
+              _keysToRemove.remove(child.key);
+            }
+            if (!widget.children
+                .map((Widget child) => child.key)
+                .contains(child.key)) {
+              _mergedChildren.remove(child);
+            }
+          });
         },
         child: child,
       );
@@ -146,8 +168,11 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
         duration: widget.duration,
         state: ShowState.show,
         onAnimationComplete: () {
-          _keysToAdd.remove(child.key);
-          setState(() {});
+          setState(() {
+            if (_keysToAdd.contains(child.key)) {
+              _keysToAdd.remove(child.key);
+            }
+          });
         },
         child: child,
       );
