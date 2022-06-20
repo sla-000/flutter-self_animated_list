@@ -58,51 +58,42 @@ class AnimatedListView extends StatefulWidget {
 }
 
 class _AnimatedListViewState extends State<AnimatedListView> {
-  final List<Widget> _previousChildren = <Widget>[];
+  final List<Widget> _mergedChildren = <Widget>[];
   final List<Key> _keysToRemove = <Key>[];
-  final List<Key> _toAdd = <Key>[];
-  late CustomAnimation _customAnimation;
+  late CustomAnimation _animation;
 
   @override
   void initState() {
     super.initState();
 
-    _customAnimation = widget.customAnimation ?? _defaultAnimation;
-  }
+    _animation = widget.customAnimation ?? _defaultAnimation;
 
-  Widget _defaultAnimation({
-    required Widget child,
-    required Animation<double> animation,
-    required ShowState state,
-  }) {
-    final CurvedAnimation curvedAnimation = state == ShowState.show
-        ? CurvedAnimation(parent: animation, curve: Curves.linear)
-        : CurvedAnimation(parent: animation, curve: Curves.linear.flipped);
-
-    return SizeTransition(
-      sizeFactor: curvedAnimation,
-      axis: widget.scrollDirection,
-      child: child,
-    );
+    _updateMerged();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final List<Key> lastChildrenKeys =
-        _previousChildren.map((Widget child) => child.key!).toList();
+  void didUpdateWidget(AnimatedListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    final List<Key> currentChildrenKeys =
-        widget.children.map((Widget child) => child.key!).toList();
+    _animation = widget.customAnimation ?? _defaultAnimation;
+
+    _updateMerged();
+  }
+
+  void _updateMerged() {
+    final List<Key> mergedChildrenKeys = _mergedChildren.map((Widget child) => child.key!).toList();
+
+    final List<Key> currentChildrenKeys = widget.children.map((Widget child) => child.key!).toList();
 
     for (final Key key in currentChildrenKeys) {
-      if (!lastChildrenKeys.contains(key)) {
-        if (!_toAdd.contains(key)) {
-          _toAdd.add(key);
+      if (!mergedChildrenKeys.contains(key)) {
+        if (_keysToRemove.contains(key)) {
+          _keysToRemove.remove(key);
         }
       }
     }
 
-    for (final Key key in lastChildrenKeys) {
+    for (final Key key in mergedChildrenKeys) {
       if (!currentChildrenKeys.contains(key)) {
         if (!_keysToRemove.contains(key)) {
           _keysToRemove.add(key);
@@ -111,16 +102,39 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     }
 
     final List<Widget> merged = mergeChanges<Widget>(
-      _previousChildren,
+      _mergedChildren,
       widget.children,
       isEqual: (Widget a, Widget b) => a.key == b.key,
     );
 
-    _previousChildren.clear();
-    _previousChildren.addAll(merged);
+    _mergedChildren.clear();
+    _mergedChildren.addAll(merged);
+  }
 
-    final List<Widget> wrappedChildren =
-        merged.map((Widget child) => _buildAnimatedItem(child)).toList();
+  Widget _defaultAnimation({
+    required Widget child,
+    required Animation<double> animation,
+    required ShowState state,
+  }) {
+    final CurvedAnimation sizeAnimation = state == ShowState.show
+        ? CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)
+        : CurvedAnimation(parent: animation, curve: Curves.easeInCubic);
+
+    final CurvedAnimation opacityAnimation = CurvedAnimation(parent: animation, curve: Curves.easeOut);
+
+    return SizeTransition(
+      sizeFactor: sizeAnimation,
+      axis: widget.scrollDirection,
+      child: FadeTransition(
+        opacity: opacityAnimation,
+        child: child,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> animatedChildren = _mergedChildren.map((Widget child) => _buildAnimatedItem(child)).toList();
 
     return ListView(
       key: widget.key,
@@ -142,41 +156,39 @@ class _AnimatedListViewState extends State<AnimatedListView> {
       keyboardDismissBehavior: widget.keyboardDismissBehavior,
       restorationId: widget.restorationId,
       clipBehavior: widget.clipBehavior,
-      children: wrappedChildren,
+      children: animatedChildren,
     );
   }
 
   Widget _buildAnimatedItem(Widget child) {
     final bool mustDelete = _keysToRemove.contains(child.key);
-    final bool mustAdd = _toAdd.contains(child.key);
 
     if (mustDelete) {
       return ShowAnimated(
         key: child.key,
-        customAnimation: _customAnimation,
+        customAnimation: _animation,
         duration: widget.duration,
         state: ShowState.hide,
-        onAnimationComplete: () {
-          _previousChildren.remove(child);
-          _keysToRemove.remove(child.key);
-          setState(() {});
+        onShrink: () {
+          setState(() {
+            if (_keysToRemove.contains(child.key)) {
+              _keysToRemove.remove(child.key);
+            }
+            if (!widget.children.map((Widget child) => child.key).contains(child.key)) {
+              _mergedChildren.remove(child);
+            }
+          });
         },
         child: child,
       );
-    } else if (mustAdd) {
-      return ShowAnimated(
-        key: child.key,
-        customAnimation: _customAnimation,
-        duration: widget.duration,
-        state: ShowState.show,
-        onAnimationComplete: () {
-          _toAdd.remove(child.key);
-          setState(() {});
-        },
-        child: child,
-      );
-    } else {
-      return child;
     }
+
+    return ShowAnimated(
+      key: child.key,
+      customAnimation: _animation,
+      duration: widget.duration,
+      state: ShowState.show,
+      child: child,
+    );
   }
 }

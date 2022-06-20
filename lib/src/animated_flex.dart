@@ -46,6 +46,8 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     super.initState();
 
     _animation = widget.customAnimation ?? _defaultAnimation;
+
+    _updateMerged();
   }
 
   @override
@@ -53,14 +55,14 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     super.didUpdateWidget(oldWidget);
 
     _animation = widget.customAnimation ?? _defaultAnimation;
+
+    _updateMerged();
   }
 
   void _updateMerged() {
-    final List<Key> mergedChildrenKeys =
-        _mergedChildren.map((Widget child) => child.key!).toList();
+    final List<Key> mergedChildrenKeys = _mergedChildren.map((Widget child) => child.key!).toList();
 
-    final List<Key> currentChildrenKeys =
-        widget.children.map((Widget child) => child.key!).toList();
+    final List<Key> currentChildrenKeys = widget.children.map((Widget child) => child.key!).toList();
 
     for (final Key key in currentChildrenKeys) {
       if (!mergedChildrenKeys.contains(key)) {
@@ -86,9 +88,6 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
 
     _mergedChildren.clear();
     _mergedChildren.addAll(merged);
-
-    print('@@@@@@@@@ children=${widget.children.map((Widget e) => e.key)}');
-    print('@@@@@@@@@ merged=${merged.map((Widget e) => e.key)}');
   }
 
   Widget _defaultAnimation({
@@ -96,24 +95,25 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     required Animation<double> animation,
     required ShowState state,
   }) {
-    final CurvedAnimation curvedAnimation = state == ShowState.show
-        ? CurvedAnimation(parent: animation, curve: Curves.linear)
-        : CurvedAnimation(parent: animation, curve: Curves.linear.flipped);
+    final CurvedAnimation sizeAnimation = state == ShowState.show
+        ? CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)
+        : CurvedAnimation(parent: animation, curve: Curves.easeInCubic);
+
+    final CurvedAnimation opacityAnimation = CurvedAnimation(parent: animation, curve: Curves.easeOut);
 
     return SizeTransition(
-      sizeFactor: curvedAnimation,
+      sizeFactor: sizeAnimation,
       axis: widget.direction,
-      child: child,
+      child: FadeTransition(
+        opacity: opacityAnimation,
+        child: child,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    _updateMerged();
-
-    final List<Widget> wrappedChildren = _mergedChildren
-        .map((Widget child) => _buildAnimatedItem(child))
-        .toList();
+    final List<Widget> animatedChildren = _mergedChildren.map((Widget child) => _buildAnimatedItem(child)).toList();
 
     return Flex(
       key: widget.key,
@@ -125,7 +125,7 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
       verticalDirection: widget.verticalDirection,
       textBaseline: widget.textBaseline,
       clipBehavior: widget.clipBehavior,
-      children: wrappedChildren,
+      children: animatedChildren,
     );
   }
 
@@ -138,17 +138,13 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
         customAnimation: _animation,
         duration: widget.duration,
         state: ShowState.hide,
-        onAnimationComplete: () {
+        onShrink: () {
           setState(() {
             if (_keysToRemove.contains(child.key)) {
               _keysToRemove.remove(child.key);
-              print('@@@@@@@@@ toRemove, remove=${child.key}');
             }
-            if (!widget.children
-                .map((Widget child) => child.key)
-                .contains(child.key)) {
+            if (!widget.children.map((Widget child) => child.key).contains(child.key)) {
               _mergedChildren.remove(child);
-              print('@@@@@@@@@ merged remove=${child.key}');
             }
           });
         },

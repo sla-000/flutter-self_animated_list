@@ -32,12 +32,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final ListCubit _horizontalCubit = ListCubit(
-      MediaQuery.of(context).orientation == Orientation.landscape ? 5 : 3);
-  late final ListCubit _verticalCubit = ListCubit(
-      MediaQuery.of(context).orientation == Orientation.portrait ? 5 : 3);
-  int _toRemove = 2;
-  int _toAdd = 2;
+  late final ListCubit _horizontalCubit =
+      ListCubit(MediaQuery.of(context).orientation == Orientation.landscape ? 4 : 3);
+  late final ListCubit _verticalCubit = ListCubit(MediaQuery.of(context).orientation == Orientation.portrait ? 4 : 3);
+  int _toRemove = 1;
+  int _toAdd = 1;
 
   @override
   void dispose() {
@@ -89,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           mainAxisSize: MainAxisSize.min,
                           direction: Axis.vertical,
                           customAnimation: customAnimation,
-                          duration: const Duration(milliseconds: 3000),
+                          duration: const Duration(milliseconds: 2000),
                           children: buildWidgets(state),
                         );
                       },

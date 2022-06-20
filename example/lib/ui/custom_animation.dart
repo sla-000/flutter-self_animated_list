@@ -8,27 +8,29 @@ Widget customAnimation({
 }) {
   switch (state) {
     case ShowState.show:
-      final curvedAnimation =
-          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+      final curvedAnimation = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+
+      final opacityAnimation = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
 
       return SizeTransition(
         sizeFactor: curvedAnimation,
         axis: Axis.vertical,
-        child: child,
+        child: FadeTransition(
+          opacity: opacityAnimation,
+          child: child,
+        ),
       );
 
     case ShowState.hide:
-      final sizeAnimation =
-          CurvedAnimation(parent: animation, curve: Curves.bounceOut.flipped);
+      final sizeAnimation = CurvedAnimation(parent: animation, curve: Curves.bounceIn);
 
-      final opacityAnimation =
-          CurvedAnimation(parent: animation, curve: Curves.easeInExpo.flipped);
+      final opacityAnimation = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
 
       return SizeTransition(
         sizeFactor: sizeAnimation,
         axis: Axis.vertical,
-        child: Opacity(
-          opacity: opacityAnimation.value,
+        child: FadeTransition(
+          opacity: opacityAnimation,
           child: child,
         ),
       );

@@ -6,7 +6,7 @@ class ShowAnimated extends StatefulWidget {
   const ShowAnimated({
     Key? key,
     required this.child,
-    this.onAnimationComplete,
+    this.onShrink,
     required this.state,
     Duration? duration,
     required this.customAnimation,
@@ -15,7 +15,7 @@ class ShowAnimated extends StatefulWidget {
 
   final Widget child;
   final ShowState state;
-  final void Function()? onAnimationComplete;
+  final void Function()? onShrink;
   final Duration _duration;
   final CustomAnimation customAnimation;
 
@@ -23,10 +23,8 @@ class ShowAnimated extends StatefulWidget {
   State<ShowAnimated> createState() => _ShowAnimatedState();
 }
 
-class _ShowAnimatedState extends State<ShowAnimated>
-    with TickerProviderStateMixin {
-  late final AnimationController _animationController =
-      AnimationController(vsync: this, duration: widget._duration);
+class _ShowAnimatedState extends State<ShowAnimated> with TickerProviderStateMixin {
+  late final AnimationController _animationController = AnimationController(vsync: this, duration: widget._duration);
 
   @override
   void initState() {
@@ -40,13 +38,13 @@ class _ShowAnimatedState extends State<ShowAnimated>
   }
 
   void _updateAnimation() {
-    widget.state == ShowState.show
-        ? _animationController.forward().whenCompleteOrCancel(() {
-            widget.onAnimationComplete?.call();
-          })
-        : _animationController.reverse().whenCompleteOrCancel(() {
-            widget.onAnimationComplete?.call();
-          });
+    if (widget.state == ShowState.show) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse().whenCompleteOrCancel(() {
+        widget.onShrink?.call();
+      });
+    }
   }
 
   @override
