@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           mainAxisSize: MainAxisSize.min,
                           direction: Axis.vertical,
                           customAnimation: customAnimation,
-                          duration: const Duration(milliseconds: 1200),
+                          duration: const Duration(milliseconds: 3000),
                           children: buildWidgets(state),
                         );
                       },

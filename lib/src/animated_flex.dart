@@ -39,7 +39,6 @@ class AnimatedFlex extends StatefulWidget {
 class _AnimatedFlexState extends State<AnimatedFlex> {
   final List<Widget> _mergedChildren = <Widget>[];
   final List<Key> _keysToRemove = <Key>[];
-  final List<Key> _keysToAdd = <Key>[];
   late CustomAnimation _animation;
 
   @override
@@ -47,8 +46,6 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     super.initState();
 
     _animation = widget.customAnimation ?? _defaultAnimation;
-
-    _updateMerged();
   }
 
   @override
@@ -56,8 +53,6 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
     super.didUpdateWidget(oldWidget);
 
     _animation = widget.customAnimation ?? _defaultAnimation;
-
-    _updateMerged();
   }
 
   void _updateMerged() {
@@ -69,10 +64,6 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
 
     for (final Key key in currentChildrenKeys) {
       if (!mergedChildrenKeys.contains(key)) {
-        if (!_keysToAdd.contains(key)) {
-          _keysToAdd.add(key);
-        }
-
         if (_keysToRemove.contains(key)) {
           _keysToRemove.remove(key);
         }
@@ -83,10 +74,6 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
       if (!currentChildrenKeys.contains(key)) {
         if (!_keysToRemove.contains(key)) {
           _keysToRemove.add(key);
-        }
-
-        if (_keysToAdd.contains(key)) {
-          _keysToAdd.remove(key);
         }
       }
     }
@@ -99,6 +86,9 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
 
     _mergedChildren.clear();
     _mergedChildren.addAll(merged);
+
+    print('@@@@@@@@@ children=${widget.children.map((Widget e) => e.key)}');
+    print('@@@@@@@@@ merged=${merged.map((Widget e) => e.key)}');
   }
 
   Widget _defaultAnimation({
@@ -119,6 +109,8 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
 
   @override
   Widget build(BuildContext context) {
+    _updateMerged();
+
     final List<Widget> wrappedChildren = _mergedChildren
         .map((Widget child) => _buildAnimatedItem(child))
         .toList();
@@ -139,7 +131,6 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
 
   Widget _buildAnimatedItem(Widget child) {
     final bool mustDelete = _keysToRemove.contains(child.key);
-    final bool mustAdd = _keysToAdd.contains(child.key);
 
     if (mustDelete) {
       return ShowAnimated(
@@ -151,33 +142,26 @@ class _AnimatedFlexState extends State<AnimatedFlex> {
           setState(() {
             if (_keysToRemove.contains(child.key)) {
               _keysToRemove.remove(child.key);
+              print('@@@@@@@@@ toRemove, remove=${child.key}');
             }
             if (!widget.children
                 .map((Widget child) => child.key)
                 .contains(child.key)) {
               _mergedChildren.remove(child);
+              print('@@@@@@@@@ merged remove=${child.key}');
             }
           });
         },
         child: child,
       );
-    } else if (mustAdd) {
-      return ShowAnimated(
-        key: child.key,
-        customAnimation: _animation,
-        duration: widget.duration,
-        state: ShowState.show,
-        onAnimationComplete: () {
-          setState(() {
-            if (_keysToAdd.contains(child.key)) {
-              _keysToAdd.remove(child.key);
-            }
-          });
-        },
-        child: child,
-      );
-    } else {
-      return child;
     }
+
+    return ShowAnimated(
+      key: child.key,
+      customAnimation: _animation,
+      duration: widget.duration,
+      state: ShowState.show,
+      child: child,
+    );
   }
 }
