@@ -1,7 +1,7 @@
 name: animated_list_view
-description: Simple animated lists with reaction to children parameter changes
+description: Simple widget lists with animation when children list is changed
 version: 0.2.0
-homepage:
+repository: https://github.com/sla-000/animated_list_view
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
