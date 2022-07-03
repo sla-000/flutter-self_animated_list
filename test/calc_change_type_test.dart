@@ -175,4 +175,36 @@ void main() {
       expect(calcChangeType<int>(4, lstPrev, lstNext), ChangeType.none);
     });
   });
+
+  group('calcChangeType, swap', () {
+    test('calcChangeType, swap, 2', () {
+      final List<int> lstPrev = <int>[1, 2];
+      final List<int> lstNext = <int>[2, 1];
+
+      expect(calcChangeType<int>(0, lstPrev, lstNext), ChangeType.none);
+      expect(calcChangeType<int>(1, lstPrev, lstNext), ChangeType.remove);
+    });
+
+    test('calcChangeType, remove from the middle, 2', () {
+      final List<int> lstPrev = <int>[1, 2, 3, 4, 5];
+      final List<int> lstNext = <int>[1, 2, 4, 5];
+
+      expect(calcChangeType<int>(0, lstPrev, lstNext), ChangeType.none);
+      expect(calcChangeType<int>(1, lstPrev, lstNext), ChangeType.none);
+      expect(calcChangeType<int>(2, lstPrev, lstNext), ChangeType.remove);
+      expect(calcChangeType<int>(3, lstPrev, lstNext), ChangeType.none);
+      expect(calcChangeType<int>(4, lstPrev, lstNext), ChangeType.none);
+    });
+
+    test('calcChangeType, remove from the middle, 3', () {
+      final List<int> lstPrev = <int>[1, 2, 3, 4, 5];
+      final List<int> lstNext = <int>[1, 2, 3, 5];
+
+      expect(calcChangeType<int>(0, lstPrev, lstNext), ChangeType.none);
+      expect(calcChangeType<int>(1, lstPrev, lstNext), ChangeType.none);
+      expect(calcChangeType<int>(2, lstPrev, lstNext), ChangeType.none);
+      expect(calcChangeType<int>(3, lstPrev, lstNext), ChangeType.remove);
+      expect(calcChangeType<int>(4, lstPrev, lstNext), ChangeType.none);
+    });
+  });
 }
