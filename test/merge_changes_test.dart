@@ -63,41 +63,16 @@ void main() {
       final List<int> x = <int>[3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
       final List<int> y = <int>[17, 18, 3, 5, 7, 8, 10, 13, 14, 15, 11];
 
-      expect(mergeChanges(x, y),
-          <int>[17, 18, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15, 11, 12]);
+      expect(mergeChanges(x, y), <int>[17, 18, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15, 11, 12]);
     });
 
     test('Test merge multiple adds and removes', () {
-      final List<String> x = <String>[
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9',
-        '10',
-        '11',
-        '12'
-      ];
-      final List<String> y = <String>[
-        '17',
-        '18',
-        '3',
-        '5',
-        '7',
-        '8',
-        '10',
-        '13',
-        '14',
-        '15',
-        '11'
-      ];
+      final List<String> x = <String>['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+      final List<String> y = <String>['17', '18', '3', '5', '7', '8', '10', '13', '14', '15', '11'];
 
       expect(
           mergeChanges(x, y,
-              isEqual: (String x, String y) =>
-                  x.runtimeType == y.runtimeType && x == y),
+              isEqual: (String x, String y) => x.runtimeType == y.runtimeType && x == y),
           <String>[
             '17', '18', '3', '4', '5', '6', '7', '8', '9', '10', '13', '14', //
             '15', '11', '12'
@@ -145,5 +120,13 @@ void main() {
 
       expect(mergeChanges(x, y), <int>[1, 2, 3, 5, 6, 4, 7, 11, 8, 12, 9, 10]);
     });
+
+    // fixme
+    // test('Test merge replace', () {
+    //   final List<int> x = <int>[1, 2];
+    //   final List<int> y = <int>[2, 1];
+    //
+    //   expect(mergeChanges(x, y), <int>[2, 1]);
+    // });
   });
 }
