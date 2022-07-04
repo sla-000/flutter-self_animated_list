@@ -14,6 +14,28 @@ IterationResult iterateSearchChanges<T>({
 }) {
   isEqual ??= _isEqualDefault<T>;
 
+  for (int currIndex = 0; currIndex < current.length; ++currIndex) {
+    if (next.contains(current.elementAt(currIndex))) {
+      if (currIndex < next.length) {
+        if (current.elementAt(currIndex) == next.elementAt(currIndex)) {
+          continue;
+        } else {
+          onRemove(currIndex, current.elementAt(currIndex));
+          current.removeAt(currIndex);
+
+          return IterationResult.repeat;
+        }
+      }
+
+      break;
+    } else {
+      onRemove(currIndex, current.elementAt(currIndex));
+      current.removeAt(currIndex);
+
+      return IterationResult.repeat;
+    }
+  }
+
   return IterationResult.complete;
 }
 
