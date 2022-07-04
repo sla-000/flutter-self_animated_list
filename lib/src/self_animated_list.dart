@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'utils/calc_change_type.dart';
+import 'utils/search_changes.dart';
 
 typedef SelfAnimatedListBuilder<T> = Widget Function(
   BuildContext context,
