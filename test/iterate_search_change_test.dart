@@ -2,27 +2,27 @@ import 'package:animated_list_view/src/utils/search_changes.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('iterateSearchChanges, add', () {
-    test('iterateSearchChanges, add, 1', () {
-      final List<int> curr = <int>[2, 3];
-      final List<int> next = <int>[1, 2, 3];
-
-      expect(
-        iterateSearchChanges<int>(
-          current: curr,
-          next: next,
-          onAdd: (int index, int item) {
-            expect(index, 0);
-            expect(item, 1);
-          },
-          onRemove: _onRemoveFail,
-        ),
-        IterationResult.complete,
-      );
-
-      expect(curr, <int>[1, 2, 3]);
-    });
-  });
+  // group('iterateSearchChanges, add', () {
+  //   test('iterateSearchChanges, add, 1', () {
+  //     final List<int> curr = <int>[2, 3];
+  //     final List<int> next = <int>[1, 2, 3];
+  //
+  //     expect(
+  //       iterateSearchChanges<int>(
+  //         current: curr,
+  //         next: next,
+  //         onAdd: (int index, int item) {
+  //           expect(index, 0);
+  //           expect(item, 1);
+  //         },
+  //         onRemove: _onRemoveFail,
+  //       ),
+  //       IterationResult.complete,
+  //     );
+  //
+  //     expect(curr, <int>[1, 2, 3]);
+  //   });
+  // });
 
   group('iterateSearchChanges, remove', () {
     test('iterateSearchChanges, remove, 1', () {
@@ -42,14 +42,7 @@ void main() {
         IterationResult.repeat,
       );
 
-      expect(curr, <int>[1, 2, 3]);
-    });
-  });
-
-  group('iterateSearchChanges, swap', () {
-    test('iterateSearchChanges, swap, 2', () {
-      final List<int> curr = <int>[1, 2];
-      final List<int> next = <int>[2, 1];
+      expect(curr, <int>[2, 3]);
 
       expect(
         iterateSearchChanges<int>(
@@ -57,31 +50,116 @@ void main() {
           next: next,
           onAdd: _onAddFail,
           onRemove: (int index, int item) {
-            expect(index, 0);
-            expect(item, 1);
+            fail('Should not get here, index=$index, item=$item');
           },
         ),
-        IterationResult.repeat,
+        IterationResult.complete,
       );
 
-      expect(curr, <int>[2]);
+      expect(curr, <int>[2, 3]);
+    });
+
+    test('iterateSearchChanges, remove, few', () {
+      final List<int> curr = <int>[1, 2, 3, 4, 5];
+      final List<int> next = <int>[1, 3];
 
       expect(
         iterateSearchChanges<int>(
           current: curr,
           next: next,
-          onAdd: (int index, int item) {
+          onAdd: _onAddFail,
+          onRemove: (int index, int item) {
             expect(index, 1);
-            expect(item, 1);
+            expect(item, 2);
           },
-          onRemove: _onRemoveFail,
+        ),
+        IterationResult.repeat,
+      );
+
+      expect(curr, <int>[1, 3, 4, 5]);
+
+      expect(
+        iterateSearchChanges<int>(
+          current: curr,
+          next: next,
+          onAdd: _onAddFail,
+          onRemove: (int index, int item) {
+            expect(index, 2);
+            expect(item, 4);
+          },
+        ),
+        IterationResult.repeat,
+      );
+
+      expect(curr, <int>[1, 3, 5]);
+
+      expect(
+        iterateSearchChanges<int>(
+          current: curr,
+          next: next,
+          onAdd: _onAddFail,
+          onRemove: (int index, int item) {
+            expect(index, 2);
+            expect(item, 5);
+          },
+        ),
+        IterationResult.repeat,
+      );
+
+      expect(curr, <int>[1, 3]);
+
+      expect(
+        iterateSearchChanges<int>(
+          current: curr,
+          next: next,
+          onAdd: _onAddFail,
+          onRemove: (int index, int item) {
+            fail('Should not get here, index=$index, item=$item');
+          },
         ),
         IterationResult.complete,
       );
 
-      expect(curr, <int>[2, 1]);
+      expect(curr, <int>[1, 3]);
     });
   });
+
+  // group('iterateSearchChanges, swap', () {
+  //   test('iterateSearchChanges, swap, 2', () {
+  //     final List<int> curr = <int>[1, 2];
+  //     final List<int> next = <int>[2, 1];
+  //
+  //     expect(
+  //       iterateSearchChanges<int>(
+  //         current: curr,
+  //         next: next,
+  //         onAdd: _onAddFail,
+  //         onRemove: (int index, int item) {
+  //           expect(index, 0);
+  //           expect(item, 1);
+  //         },
+  //       ),
+  //       IterationResult.repeat,
+  //     );
+  //
+  //     expect(curr, <int>[2]);
+  //
+  //     expect(
+  //       iterateSearchChanges<int>(
+  //         current: curr,
+  //         next: next,
+  //         onAdd: (int index, int item) {
+  //           expect(index, 1);
+  //           expect(item, 1);
+  //         },
+  //         onRemove: _onRemoveFail,
+  //       ),
+  //       IterationResult.complete,
+  //     );
+  //
+  //     expect(curr, <int>[2, 1]);
+  //   });
+  // });
 }
 
 void _onAddFail(int index, int item) => fail('Should not call onAdd');
