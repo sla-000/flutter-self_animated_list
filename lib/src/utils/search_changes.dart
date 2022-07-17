@@ -32,6 +32,7 @@ IterationResult iterateSearchChanges<T>({
     return IterationResult.repeat;
   }
 
+  assert(true, 'wtf');
   return IterationResult.repeat;
 }
 

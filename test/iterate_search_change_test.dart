@@ -349,42 +349,58 @@ void main() {
     });
   });
 
-  // group('iterateSearchChanges, swap', () {
-  //   test('iterateSearchChanges, swap, 2', () {
-  //     final List<int> initial = <int>[1, 2];
-  //     const List<int> target = <int>[2, 1];
-  //
-  //     expect(
-  //       iterateSearchChanges<int>(
-  //         current: initial,
-  //         target: target,
-  //         onAdd: _onAddFail,
-  //         onRemove: (int index, int item) {
-  //           expect(index, 0);
-  //           expect(item, 1);
-  //         },
-  //       ),
-  //       IterationResult.repeat,
-  //     );
-  //
-  //     expect(initial, <int>[2]);
-  //
-  //     expect(
-  //       iterateSearchChanges<int>(
-  //         current: initial,
-  //         target: target,
-  //         onAdd: (int index, int item) {
-  //           expect(index, 1);
-  //           expect(item, 1);
-  //         },
-  //         onRemove: _onRemoveFail,
-  //       ),
-  //       IterationResult.complete,
-  //     );
-  //
-  //     expect(initial, <int>[2, 1]);
-  //   });
-  // });
+  group('iterateSearchChanges, swap', () {
+    test('iterateSearchChanges, swap at start', () {
+      final List<int> initial = <int>[1, 2, 3];
+      const List<int> target = <int>[2, 1, 3];
+
+      expect(
+        iterateSearchChanges<int>(
+          initial: initial,
+          target: target,
+          onAdd: _onAddFail,
+          onRemove: (int index, int item) {
+            expect(index, 0);
+            expect(item, 1);
+
+            initial.insert(index, item);
+          },
+        ),
+        IterationResult.repeat,
+      );
+
+      expect(initial, <int>[2, 3]);
+
+      expect(
+        iterateSearchChanges<int>(
+          initial: initial,
+          target: target,
+          onAdd: (int index, int item) {
+            expect(index, 1);
+            expect(item, 0);
+
+            initial.removeAt(index);
+          },
+          onRemove: _onRemoveFail,
+        ),
+        IterationResult.repeat,
+      );
+
+      expect(initial, <int>[2, 1, 3]);
+
+      expect(
+        iterateSearchChanges<int>(
+          initial: initial,
+          target: target,
+          onAdd: _onAddFail,
+          onRemove: _onRemoveFail,
+        ),
+        IterationResult.complete,
+      );
+
+      expect(initial, <int>[2, 1, 3]);
+    });
+  });
 }
 
 void _onAddFail(int index, int item) => fail('Should not call onAdd, index=$index, item=$item');
