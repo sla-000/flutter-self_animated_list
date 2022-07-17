@@ -64,7 +64,7 @@ void main() {
         expect(findDifferenceIndex<int>(initial: initial, target: target), 1);
       });
 
-      test('findDifferenceIndex, remove at end', () {
+      test('findDifferenceIndex, swap at end', () {
         final List<int> initial = <int>[1, 2, 3];
         const List<int> target = <int>[1, 3, 2];
 
