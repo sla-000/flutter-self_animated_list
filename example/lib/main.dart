@@ -1,10 +1,10 @@
-import 'package:animated_list_view/animated_lists.dart';
 import 'package:example/logic/list_cubit.dart';
 import 'package:example/model/item_model.dart';
 import 'package:example/ui/item_tile.dart';
 import 'package:example/ui/slider_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:self_animated_list/self_animated_list.dart';
 
 void main() => runApp(const MyApp());
 

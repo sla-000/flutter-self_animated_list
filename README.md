@@ -1,6 +1,6 @@
-# animated_list_view
+# self_animated_list
 
-Simple widget lists with animation when children list is changed
+AnimatedList with animation when list of the items changed
 
 ## Problem
 

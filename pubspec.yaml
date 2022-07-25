@@ -1,5 +1,5 @@
-name: animated_list_view
-description: Simple widget lists with animation when children list is changed
+name: self_animated_list
+description: AnimatedList with animation when list of the items changed
 version: 0.2.0
 repository: https://github.com/sla-000/animated_list_view
 
