@@ -363,7 +363,7 @@ void main() {
             expect(index, 0);
             expect(item, 1);
 
-            initial.insert(index, item);
+            initial.removeAt(index);
           },
         ),
         IterationResult.repeat,
@@ -377,9 +377,9 @@ void main() {
           target: target,
           onAdd: (int index, int item) {
             expect(index, 1);
-            expect(item, 0);
+            expect(item, 1);
 
-            initial.removeAt(index);
+            initial.insert(index, item);
           },
           onRemove: _onRemoveFail,
         ),

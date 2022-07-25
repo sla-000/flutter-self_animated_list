@@ -26,6 +26,16 @@ IterationResult iterateSearchChanges<T>({
     return IterationResult.repeat;
   }
 
+  final List<T> subTarget = diffIndex < target.length ? target.sublist(diffIndex + 1) : <T>[];
+
+  if (diffIndex < initial.length &&
+      subTarget.contains(initial.elementAt(diffIndex)) &&
+      initial.contains(target.elementAt(diffIndex))) {
+    onRemove(diffIndex, initial.elementAt(diffIndex));
+
+    return IterationResult.repeat;
+  }
+
   if (diffIndex >= initial.length || initial.elementAt(diffIndex) != target.elementAt(diffIndex)) {
     onAdd(diffIndex, target.elementAt(diffIndex));
 
