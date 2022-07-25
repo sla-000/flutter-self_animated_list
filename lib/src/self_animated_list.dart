@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'utils/search_changes.dart';
 
-typedef SelfAnimatedListBuilder<T> = Widget Function(
-  BuildContext context,
-  T item,
-  Animation<double> animation,
-);
-
 class SelfAnimatedList<T> extends StatefulWidget {
   const SelfAnimatedList({
     super.key,
@@ -29,8 +23,8 @@ class SelfAnimatedList<T> extends StatefulWidget {
   });
 
   final List<T> data;
-  final SelfAnimatedListBuilder<T> addBuilder;
-  final SelfAnimatedListBuilder<T> removeBuilder;
+  final Widget Function(BuildContext context, T item, Animation<double> animation) addBuilder;
+  final Widget Function(BuildContext context, T item, Animation<double> animation) removeBuilder;
   final Duration addDuration;
   final Duration removeDuration;
   final int initialItemCount;
@@ -70,11 +64,8 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
       onRemove: (int index, T item) {
         _key.currentState?.removeItem(
           index,
-          (BuildContext context, Animation<double> animation) => widget.removeBuilder(
-            context,
-            item,
-            AnimationController(vsync: this),
-          ),
+          (BuildContext context, Animation<double> animation) =>
+              widget.removeBuilder(context, item, animation),
           duration: widget.removeDuration,
         );
       },
