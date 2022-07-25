@@ -10,7 +10,7 @@ typedef SelfAnimatedListBuilder<T> = Widget Function(
 
 class SelfAnimatedList<T> extends StatefulWidget {
   const SelfAnimatedList({
-    Key? key,
+    super.key,
     required this.data,
     required this.addBuilder,
     required this.removeBuilder,
@@ -25,7 +25,8 @@ class SelfAnimatedList<T> extends StatefulWidget {
     this.shrinkWrap = false,
     this.padding,
     this.clipBehavior = Clip.hardEdge,
-  }) : super(key: key);
+    this.isEqual,
+  });
 
   final List<T> data;
   final SelfAnimatedListBuilder<T> addBuilder;
@@ -41,45 +42,43 @@ class SelfAnimatedList<T> extends StatefulWidget {
   final bool shrinkWrap;
   final EdgeInsetsGeometry? padding;
   final Clip clipBehavior;
+  final bool Function(T a, T b)? isEqual;
 
   @override
   State<SelfAnimatedList<T>> createState() => _SelfAnimatedListState<T>();
 }
 
-class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> {
+class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerProviderStateMixin {
   final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
-  late final List<T> _lastData = List<T>.of(widget.data);
 
   @override
   void didUpdateWidget(SelfAnimatedList<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    for (int index = 0; index < widget.data.length; ++index) {
-      final ChangeType changeType = calcChangeType(index, _lastData, widget.data);
+    final List<T> mutableData = List<T>.of(oldWidget.data);
 
-      switch (changeType) {
-        case ChangeType.add:
-          _key.currentState!.insertItem(
-            index,
-            duration: widget.addDuration,
-          );
-          break;
-
-        case ChangeType.remove:
-          _key.currentState!.removeItem(
-            index,
-            (BuildContext context, Animation<double> animation) =>
-                widget.removeBuilder(context, widget.data.elementAt(index), animation),
-            duration: widget.removeDuration,
-          );
-          break;
-
-        case ChangeType.none:
-      }
-    }
-
-    _lastData.clear();
-    _lastData.addAll(widget.data);
+    searchChanges(
+      initial: mutableData,
+      target: widget.data,
+      isEqual: widget.isEqual,
+      onAdd: (int index, T item) {
+        _key.currentState?.insertItem(
+          index,
+          duration: widget.addDuration,
+        );
+      },
+      onRemove: (int index, T item) {
+        _key.currentState?.removeItem(
+          index,
+          (BuildContext context, Animation<double> animation) => widget.removeBuilder(
+            context,
+            item,
+            AnimationController(vsync: this),
+          ),
+          duration: widget.removeDuration,
+        );
+      },
+    );
   }
 
   @override
@@ -87,7 +86,7 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> {
     return AnimatedList(
       key: _key,
       itemBuilder: (BuildContext context, int index, Animation<double> animation) =>
-          widget.addBuilder(context, _lastData.elementAt(index), animation),
+          widget.addBuilder(context, widget.data.elementAt(index), animation),
       initialItemCount: widget.initialItemCount,
       scrollDirection: widget.scrollDirection,
       reverse: widget.reverse,
