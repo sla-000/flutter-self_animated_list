@@ -1,3 +1,8 @@
+## 0.2.0
+
+* New Algorithm
+* New package name
+
 ## 0.1.1
 
 * Modern typedef

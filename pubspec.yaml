@@ -1,10 +1,10 @@
-name: animated_list_view
-description: Simple animated lists with reaction to children parameter changes
+name: self_animated_list
+description: AnimatedList with animation when list of the items changed
 version: 0.2.0
-homepage:
+repository: https://github.com/sla-000/animated_list_view
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   flutter:

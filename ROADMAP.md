@@ -1,3 +1,5 @@
-- ListView.builder, separated, custom wrappers
-
-
+- Add swap example
+- Write README.md
+- Refactor and clean
+- Publish
+- 
