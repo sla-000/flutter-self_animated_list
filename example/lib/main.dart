@@ -125,37 +125,14 @@ class _MyHomePageState extends State<MyHomePage> {
             removeDuration: const Duration(milliseconds: 3000),
             initialItemCount: _verticalCubit.state.length,
             data: _verticalCubit.state,
-            addBuilder: (BuildContext context, ItemModel item, Animation<double> animation) =>
-                defaultAddBuilder(
-              context: context,
-              item: item,
+            itemBuilder: _buildItem,
+            addBuilder: (Animation<double> animation, Widget child) => defaultAddBuilder(
               animation: animation,
-              builder: (_) => ItemTile(
-                key: ValueKey(item.value),
-                color: item.color,
-              ),
+              child: child,
             ),
-            removeBuilder: (BuildContext context, ItemModel item, Animation<double> animation) =>
-                _bounceRemoveAnimation(animation, item),
+            removeBuilder: _bounceRemoveBuilder,
           );
         },
-      ),
-    );
-  }
-
-  SizeTransition _bounceRemoveAnimation(Animation<double> animation, ItemModel item) {
-    final sizeAnimation = CurvedAnimation(parent: animation, curve: Curves.bounceIn);
-    final opacityAnimation = animation;
-
-    return SizeTransition(
-      sizeFactor: sizeAnimation,
-      axis: Axis.vertical,
-      child: FadeTransition(
-        opacity: opacityAnimation,
-        child: ItemTile(
-          key: ValueKey(item.value),
-          color: item.color,
-        ),
       ),
     );
   }
@@ -173,27 +150,16 @@ class _MyHomePageState extends State<MyHomePage> {
             removeDuration: const Duration(milliseconds: 1500),
             initialItemCount: _horizontalCubit.state.length,
             data: _horizontalCubit.state,
-            addBuilder: (BuildContext context, ItemModel item, Animation<double> animation) =>
-                defaultAddBuilder(
-              context: context,
-              item: item,
+            itemBuilder: _buildItem,
+            addBuilder: (Animation<double> animation, Widget child) => defaultAddBuilder(
               animation: animation,
               axis: Axis.horizontal,
-              builder: (_) => ItemTile(
-                key: ValueKey(item.value),
-                color: item.color,
-              ),
+              child: child,
             ),
-            removeBuilder: (BuildContext context, ItemModel item, Animation<double> animation) =>
-                defaultRemoveBuilder(
-              context: context,
-              item: item,
+            removeBuilder: (Animation<double> animation, Widget child) => defaultRemoveBuilder(
               animation: animation,
               axis: Axis.horizontal,
-              builder: (_) => ItemTile(
-                key: ValueKey(item.value),
-                color: item.color,
-              ),
+              child: child,
             ),
           );
         },
@@ -202,69 +168,21 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class Divider extends StatelessWidget {
-  const Divider({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 8,
-      color: Theme.of(context).dividerColor,
-    );
-  }
-}
-
-Widget defaultAddBuilder({
-  required BuildContext context,
-  required ItemModel item,
-  required Animation<double> animation,
-  required WidgetBuilder builder,
-  Axis axis = Axis.vertical,
-}) =>
-    defaultCurveBuilder(
-      context: context,
-      item: item,
-      animation: animation,
-      axis: axis,
-      curve: Curves.easeOutCubic,
-      builder: builder,
+Widget _buildItem(_, ItemModel item) => ItemTile(
+      key: ValueKey(item.value),
+      color: item.color,
     );
 
-Widget defaultRemoveBuilder({
-  required BuildContext context,
-  required ItemModel item,
-  required Animation<double> animation,
-  required WidgetBuilder builder,
-  Axis axis = Axis.vertical,
-}) =>
-    defaultCurveBuilder(
-      context: context,
-      item: item,
-      animation: animation,
-      axis: axis,
-      curve: Curves.easeInCubic,
-      builder: builder,
-    );
-
-Widget defaultCurveBuilder({
-  required BuildContext context,
-  required ItemModel item,
-  required Animation<double> animation,
-  required WidgetBuilder builder,
-  Axis axis = Axis.vertical,
-  Curve curve = Curves.easeInCubic,
-}) {
-  final curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+SizeTransition _bounceRemoveBuilder(Animation<double> animation, Widget child) {
+  final sizeAnimation = CurvedAnimation(parent: animation, curve: Curves.bounceIn);
   final opacityAnimation = animation;
 
   return SizeTransition(
-    sizeFactor: curvedAnimation,
-    axis: axis,
+    sizeFactor: sizeAnimation,
+    axis: Axis.vertical,
     child: FadeTransition(
       opacity: opacityAnimation,
-      child: builder(context),
+      child: child,
     ),
   );
 }
