@@ -8,8 +8,8 @@ bool _isEqualDefault<T>(T a, T b) => a.runtimeType == b.runtimeType && a == b;
 IterationResult iterateSearchChanges<T>({
   required List<T> initial,
   required List<T> target,
-  required void Function(int index, T item) onAdd,
-  required void Function(int index, T item) onRemove,
+  void Function(int index, T item)? onAdd,
+  void Function(int index, T item)? onRemove,
   bool Function(T a, T b)? isEqual,
 }) {
   isEqual ??= _isEqualDefault<T>;
@@ -21,7 +21,8 @@ IterationResult iterateSearchChanges<T>({
   }
 
   if (diffIndex < initial.length && !target.contains(initial.elementAt(diffIndex))) {
-    onRemove(diffIndex, initial.elementAt(diffIndex));
+    onRemove?.call(diffIndex, initial.elementAt(diffIndex));
+    initial.removeAt(diffIndex);
 
     return IterationResult.repeat;
   }
@@ -31,39 +32,40 @@ IterationResult iterateSearchChanges<T>({
   if (diffIndex < initial.length &&
       subTarget.contains(initial.elementAt(diffIndex)) &&
       initial.contains(target.elementAt(diffIndex))) {
-    onRemove(diffIndex, initial.elementAt(diffIndex));
+    onRemove?.call(diffIndex, initial.elementAt(diffIndex));
+    initial.removeAt(diffIndex);
 
     return IterationResult.repeat;
   }
 
   if (diffIndex >= initial.length || initial.elementAt(diffIndex) != target.elementAt(diffIndex)) {
-    onAdd(diffIndex, target.elementAt(diffIndex));
+    onAdd?.call(diffIndex, target.elementAt(diffIndex));
+    initial.insert(diffIndex, target.elementAt(diffIndex));
 
     return IterationResult.repeat;
   }
 
-  assert(true, 'wtf');
-  return IterationResult.repeat;
+  throw StateError('Internal error, initial=$initial, target=$target');
 }
 
 void searchChanges<T>({
-  required List<T> current,
-  required List<T> next,
-  required void Function(int index, T item) onAdd,
-  required void Function(int index, T item) onRemove,
+  required List<T> initial,
+  required List<T> target,
+  void Function(int index, T item)? onAdd,
+  void Function(int index, T item)? onRemove,
   bool Function(T a, T b)? isEqual,
 }) {
   late IterationResult iterationResult;
 
   do {
     iterationResult = iterateSearchChanges(
-      initial: current,
-      target: next,
+      initial: initial,
+      target: target,
       onAdd: onAdd,
       onRemove: onRemove,
       isEqual: isEqual,
     );
-  } while (iterationResult != IterationResult.repeat);
+  } while (iterationResult != IterationResult.complete);
 }
 
 // Find least index of difference between two lists
