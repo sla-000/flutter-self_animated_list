@@ -1,6 +1,6 @@
 # self_animated_list
 
-AnimatedList with animation when list of the items changed
+AnimatedList which animates self when list of the items changed
 
 ## Problem
 

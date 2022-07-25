@@ -1,7 +1,7 @@
 name: self_animated_list
-description: AnimatedList with animation when list of the items changed
+description: AnimatedList which animates self when list of the items changed
 version: 0.2.0
-repository: https://github.com/sla-000/animated_list_view
+repository: https://github.com/sla-000/self_animated_list
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
