@@ -3,7 +3,6 @@ import 'package:example/ui/item_tile.dart';
 import 'package:flutter/material.dart';
 
 Widget itemBuilder(_, int index, ItemModel item) => ItemTile(
-      key: ValueKey(item.value),
       color: item.color,
       index: index,
     );

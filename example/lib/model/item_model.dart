@@ -3,9 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class ItemModel {
-  ItemModel(this.value) : color = _getRandomColor();
+  ItemModel() : color = _getRandomColor();
 
-  final int value;
   final Color color;
 
   static Color _getRandomColor() {
@@ -25,18 +24,13 @@ class ItemModel {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ItemModel && runtimeType == other.runtimeType && value == other.value;
+      other is ItemModel && runtimeType == other.runtimeType && color == other.color;
 
   @override
-  int get hashCode => value.hashCode;
+  int get hashCode => color.hashCode;
 
   @override
   String toString() {
-    return 'ItemModel{value: $value, color: $color}';
+    return 'ItemModel{color: $color}';
   }
-}
-
-int getRandomKey() {
-  return Random.secure().nextInt(1 << 32) * Random.secure().nextInt(1 << 16) +
-      Random.secure().nextInt(1 << 16);
 }

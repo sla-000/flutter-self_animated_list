@@ -14,7 +14,7 @@ class HorizontalTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: kTileHeight,
+      height: tileHeight(context),
       child: BlocBuilder<ListCubit, List<ItemModel>>(
         builder: (BuildContext context, List<ItemModel> state) {
           return SelfAnimatedList<ItemModel>(

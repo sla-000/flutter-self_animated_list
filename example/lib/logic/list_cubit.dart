@@ -8,7 +8,7 @@ class ListCubit extends Cubit<List<ItemModel>> {
       : super(
           List<ItemModel>.generate(
             count,
-            (_) => ItemModel(getRandomKey()),
+            (_) => ItemModel(),
           ),
         );
 
@@ -32,7 +32,7 @@ class ListCubit extends Cubit<List<ItemModel>> {
     for (int i = 0; i < toAdd; ++i) {
       newList.insert(
         random.nextInt(newList.length + 1),
-        ItemModel(getRandomKey()),
+        ItemModel(),
       );
     }
   }

@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
 
-const double kTileWidth = 120;
-const double kTileHeight = 100;
+double tileWidth(BuildContext context) => 128 * MediaQuery.of(context).textScaleFactor;
+double tileHeight(BuildContext context) => 96 * MediaQuery.of(context).textScaleFactor;
 
 class ItemTile extends StatelessWidget {
-  ItemTile({
+  const ItemTile({
     Key? key,
     required this.color,
     required this.index,
-  })  : _key = key.toString(),
-        super(key: key);
+  }) : super(key: key);
 
-  final String _key;
   final Color color;
   final int index;
 
   @override
   Widget build(BuildContext context) {
-    final paddedKey = _key.padLeft(25);
-
     return SizedBox(
-      width: kTileWidth,
-      height: kTileHeight,
+      width: tileWidth(context),
+      height: tileHeight(context),
       child: ColoredBox(
         color: color,
         child: Stack(
@@ -37,7 +33,7 @@ class ItemTile extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: Text(
-                "Key: ${paddedKey.substring(paddedKey.length - 8, paddedKey.length - 2)}",
+                "0x${color.value.toRadixString(16).toUpperCase().substring(2).padLeft(6, '0')}",
               ),
             ),
           ],
