@@ -1,7 +1,8 @@
 import 'package:example/logic/list_cubit.dart';
 import 'package:example/model/item_model.dart';
+import 'package:example/ui/add_rem_value.dart';
 import 'package:example/ui/item_tile.dart';
-import 'package:example/ui/slider_value.dart';
+import 'package:example/ui/swap_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:self_animated_list/self_animated_list.dart';
@@ -37,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ListCubit(MediaQuery.of(context).orientation == Orientation.portrait ? 4 : 3);
   int _toRemove = 1;
   int _toAdd = 1;
+  int _toSwap = 0;
 
   @override
   void dispose() {
@@ -81,16 +83,22 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SliderValue(
-            prefix: '+',
+          AddRemValue(
+            prefix: '🔼',
             readValue: () => _toAdd,
             onChange: (int value) => _toAdd = value.round(),
           ),
           const SizedBox(height: 16),
-          SliderValue(
-            prefix: '-',
+          AddRemValue(
+            prefix: '🔽',
             readValue: () => _toRemove,
             onChange: (int value) => _toRemove = value.round(),
+          ),
+          const SizedBox(height: 16),
+          SwapValue(
+            prefix: '🔀',
+            readValue: () => _toSwap,
+            onChange: (int value) => _toSwap = value.round(),
           ),
           const SizedBox(height: 16),
           ElevatedButton(

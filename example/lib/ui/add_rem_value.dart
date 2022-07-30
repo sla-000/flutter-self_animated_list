@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SliderValue extends StatefulWidget {
-  const SliderValue({
+class AddRemValue extends StatefulWidget {
+  const AddRemValue({
     Key? key,
     this.prefix = '',
     required this.readValue,
@@ -13,19 +13,19 @@ class SliderValue extends StatefulWidget {
   final void Function(int value) onChange;
 
   @override
-  State<SliderValue> createState() => _SliderValueState();
+  State<AddRemValue> createState() => _AddRemValueState();
 }
 
-class _SliderValueState extends State<SliderValue> {
+class _AddRemValueState extends State<AddRemValue> {
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
-          width: 32,
+          width: 48 * MediaQuery.of(context).textScaleFactor,
           child: Text(
-            '${widget.prefix}${widget.readValue()}',
+            '${widget.prefix} ${widget.readValue()}',
             style: Theme.of(context).textTheme.headline5,
           ),
         ),
