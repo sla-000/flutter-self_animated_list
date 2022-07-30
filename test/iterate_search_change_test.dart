@@ -310,5 +310,4 @@ void main() {
 
 void _onAddFail(int index, int item) => fail('Should not call onAdd, index=$index, item=$item');
 
-void _onRemoveFail(int index, int item) =>
-    fail('Should not call onRemove, index=$index, item=$item');
+void _onRemoveFail(int index, int item) => fail('Should not call onRemove, index=$index, item=$item');

@@ -25,9 +25,7 @@ class ItemModel {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ItemModel &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+      other is ItemModel && runtimeType == other.runtimeType && value == other.value;
 
   @override
   int get hashCode => value.hashCode;
