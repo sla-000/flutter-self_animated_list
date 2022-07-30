@@ -15,17 +15,19 @@ class ListCubit extends Cubit<List<ItemModel>> {
   void update({
     int toAdd = 0,
     int toRemove = 0,
+    int toSwap = 0,
   }) {
-    final math.Random random =
-        math.Random(DateTime.now().microsecondsSinceEpoch);
-
     List<ItemModel> newList = List<ItemModel>.of(state);
 
-    toRemove = math.min(toRemove, newList.length);
+    _remove(toRemove, newList);
+    _add(toAdd, newList);
+    _swap(toSwap, newList);
 
-    for (int i = 0; i < toRemove; ++i) {
-      newList.removeAt(random.nextInt(newList.length));
-    }
+    emit(List<ItemModel>.unmodifiable(newList));
+  }
+
+  void _add(int toAdd, List<ItemModel> newList) {
+    final math.Random random = math.Random(DateTime.now().microsecondsSinceEpoch);
 
     for (int i = 0; i < toAdd; ++i) {
       newList.insert(
@@ -33,23 +35,43 @@ class ListCubit extends Cubit<List<ItemModel>> {
         ItemModel(getRandomKey()),
       );
     }
-
-    emit(List<ItemModel>.unmodifiable(newList));
   }
 
-  void addOne(int index) {
-    List<ItemModel> newList = List<ItemModel>.of(state);
+  void _remove(int toRemove, List<ItemModel> newList) {
+    final math.Random random = math.Random(DateTime.now().microsecondsSinceEpoch);
 
-    newList.insert(index, ItemModel(getRandomKey()));
+    toRemove = math.min(toRemove, newList.length);
 
-    emit(List<ItemModel>.unmodifiable(newList));
+    for (int i = 0; i < toRemove; ++i) {
+      newList.removeAt(random.nextInt(newList.length));
+    }
   }
 
-  void removeOne(int index) {
-    List<ItemModel> newList = List<ItemModel>.of(state);
+  void _swap(int toSwap, List<ItemModel> newList) {
+    if (toSwap > newList.length || toSwap.isOdd) {
+      return;
+    }
 
-    newList.removeAt(index);
+    final math.Random random = math.Random(DateTime.now().microsecondsSinceEpoch);
 
-    emit(List<ItemModel>.unmodifiable(newList));
+    final List<int> indexesAvailable = List<int>.generate(newList.length, (index) => index);
+
+    while (toSwap > 0) {
+      final int swapIndex0 = indexesAvailable.elementAt(random.nextInt(indexesAvailable.length));
+      indexesAvailable.remove(swapIndex0);
+      final int swapIndex1 = indexesAvailable.elementAt(random.nextInt(indexesAvailable.length));
+      indexesAvailable.remove(swapIndex1);
+
+      final ItemModel swapItem0 = newList.elementAt(swapIndex0);
+      final ItemModel swapItem1 = newList.elementAt(swapIndex1);
+
+      newList.removeAt(swapIndex0);
+      newList.insert(swapIndex0, swapItem1);
+
+      newList.removeAt(swapIndex1);
+      newList.insert(swapIndex1, swapItem0);
+
+      toSwap -= 2;
+    }
   }
 }

@@ -23,17 +23,17 @@ class _SwapValueState extends State<SwapValue> {
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
-          width: 48 * MediaQuery.of(context).textScaleFactor,
+          width: 64 * MediaQuery.of(context).textScaleFactor,
           child: Text(
             '${widget.prefix} ${widget.readValue()}',
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headline6,
           ),
         ),
         Expanded(
           child: Slider(
             min: 0,
-            max: 4,
-            divisions: 2,
+            max: 6,
+            divisions: 3,
             value: widget.readValue().toDouble(),
             onChanged: (double value) {
               setState(() {

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'SelfAnimatedList Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -32,10 +32,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final ListCubit _horizontalCubit =
-      ListCubit(MediaQuery.of(context).orientation == Orientation.landscape ? 4 : 3);
-  late final ListCubit _verticalCubit =
-      ListCubit(MediaQuery.of(context).orientation == Orientation.portrait ? 4 : 3);
+  late final ListCubit _horizontalCubit = ListCubit(5);
+  late final ListCubit _verticalCubit = ListCubit(5);
   int _toRemove = 1;
   int _toAdd = 1;
   int _toSwap = 0;
@@ -52,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Test AnimatedListView"),
+        title: const Text("SelfAnimatedList Demo"),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -79,24 +77,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _controls() {
     return SizedBox(
-      width: 200,
+      width: 250,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           AddRemValue(
-            prefix: '🔼',
+            prefix: 'Add',
             readValue: () => _toAdd,
             onChange: (int value) => _toAdd = value.round(),
           ),
           const SizedBox(height: 16),
           AddRemValue(
-            prefix: '🔽',
+            prefix: 'Rem',
             readValue: () => _toRemove,
             onChange: (int value) => _toRemove = value.round(),
           ),
           const SizedBox(height: 16),
           SwapValue(
-            prefix: '🔀',
+            prefix: 'Swp',
             readValue: () => _toSwap,
             onChange: (int value) => _toSwap = value.round(),
           ),
@@ -106,11 +104,13 @@ class _MyHomePageState extends State<MyHomePage> {
               _horizontalCubit.update(
                 toAdd: _toAdd,
                 toRemove: _toRemove,
+                toSwap: _toSwap,
               );
 
               _verticalCubit.update(
                 toAdd: _toAdd,
                 toRemove: _toRemove,
+                toSwap: _toSwap,
               );
             },
             child: const Text('Update'),
