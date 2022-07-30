@@ -168,9 +168,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Widget _buildItem(_, ItemModel item) => ItemTile(
+Widget _buildItem(_, int index, ItemModel item) => ItemTile(
       key: ValueKey(item.value),
       color: item.color,
+      index: index,
     );
 
 SizeTransition _bounceRemoveBuilder(Animation<double> animation, Widget child) {
