@@ -1,7 +1,7 @@
 import 'package:example/custom_animations/bounce_remove_builder.dart';
 import 'package:example/logic/list_cubit.dart';
 import 'package:example/model/item_model.dart';
-import 'package:example/ui/build_item.dart';
+import 'package:example/ui/item_builder.dart';
 import 'package:example/ui/item_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +25,7 @@ class VerticalTiles extends StatelessWidget {
             removeDuration: const Duration(milliseconds: 2500),
             initialItemCount: state.length,
             data: state,
-            itemBuilder: buildItem,
+            itemBuilder: itemBuilder,
             addBuilder: (Animation<double> animation, Widget child) => defaultAddBuilder(
               animation: animation,
               child: child,
