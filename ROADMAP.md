@@ -1,4 +1,4 @@
-- Add swap example
+- Check how it will work if items (keys) are the same
 - Write README.md
 - Refactor and clean
 - Publish
