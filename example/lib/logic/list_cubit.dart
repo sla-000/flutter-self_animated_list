@@ -27,7 +27,7 @@ class ListCubit extends Cubit<List<ItemModel>> {
   }
 
   void _add(int toAdd, List<ItemModel> newList) {
-    final math.Random random = math.Random(DateTime.now().microsecondsSinceEpoch);
+    final math.Random random = math.Random.secure();
 
     for (int i = 0; i < toAdd; ++i) {
       newList.insert(
@@ -38,7 +38,7 @@ class ListCubit extends Cubit<List<ItemModel>> {
   }
 
   void _remove(int toRemove, List<ItemModel> newList) {
-    final math.Random random = math.Random(DateTime.now().microsecondsSinceEpoch);
+    final math.Random random = math.Random.secure();
 
     toRemove = math.min(toRemove, newList.length);
 
@@ -52,7 +52,7 @@ class ListCubit extends Cubit<List<ItemModel>> {
       return;
     }
 
-    final math.Random random = math.Random(DateTime.now().microsecondsSinceEpoch);
+    final math.Random random = math.Random.secure();
 
     final List<int> indexesAvailable = List<int>.generate(newList.length, (index) => index);
 
