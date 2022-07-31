@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 
-Widget defaultAddBuilder({
-  required Animation<double> animation,
-  Axis axis = Axis.vertical,
-  required Widget child,
-}) =>
+Widget defaultAddBuilder(
+  BuildContext context,
+  Animation<double> animation,
+  int index,
+  Widget child,
+) =>
     defaultCurveBuilder(
       animation: animation,
-      axis: axis,
+      axis: Scrollable.of(context)!.widget.axis,
       curve: Curves.easeOutCubic,
       child: child,
     );
 
-Widget defaultRemoveBuilder({
-  required Animation<double> animation,
-  Axis axis = Axis.vertical,
-  required Widget child,
-}) =>
+Widget defaultRemoveBuilder(
+  BuildContext context,
+  Animation<double> animation,
+  int index,
+  Widget child,
+) =>
     defaultCurveBuilder(
       animation: animation,
-      axis: axis,
+      axis: Scrollable.of(context)!.widget.axis,
       child: child,
     );
 
