@@ -1,8 +1,8 @@
+import 'package:example/horizontal_tiles.dart';
 import 'package:example/logic/list_cubit.dart';
 import 'package:example/ui/add_rem_value.dart';
-import 'package:example/ui/horizontal_tiles.dart';
 import 'package:example/ui/swap_value.dart';
-import 'package:example/ui/vertical_tiles.dart';
+import 'package:example/vertical_tiles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
