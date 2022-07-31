@@ -25,8 +25,8 @@ class SelfAnimatedList<T> extends StatefulWidget {
 
   final List<T> data;
   final Widget Function(BuildContext context, int index, T item) itemBuilder;
-  final Widget Function(Animation<double> animation, Widget child) addBuilder;
-  final Widget Function(Animation<double> animation, Widget child) removeBuilder;
+  final Widget Function(Animation<double> animation, int index, Widget child) addBuilder;
+  final Widget Function(Animation<double> animation, int index, Widget child) removeBuilder;
   final Duration addDuration;
   final Duration removeDuration;
   final int initialItemCount;
@@ -67,7 +67,7 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
         _key.currentState?.removeItem(
           index,
           (BuildContext context, Animation<double> animation) =>
-              widget.removeBuilder(animation, widget.itemBuilder(context, index, item)),
+              widget.removeBuilder(animation, index, widget.itemBuilder(context, index, item)),
           duration: widget.removeDuration,
         );
       },
@@ -78,8 +78,9 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
   Widget build(BuildContext context) {
     return AnimatedList(
       key: _key,
-      itemBuilder: (BuildContext context, int index, Animation<double> animation) => widget
-          .addBuilder(animation, widget.itemBuilder(context, index, widget.data.elementAt(index))),
+      itemBuilder: (BuildContext context, int index, Animation<double> animation) =>
+          widget.addBuilder(
+              animation, index, widget.itemBuilder(context, index, widget.data.elementAt(index))),
       initialItemCount: widget.initialItemCount,
       scrollDirection: widget.scrollDirection,
       reverse: widget.reverse,

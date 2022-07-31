@@ -26,7 +26,7 @@ class VerticalTiles extends StatelessWidget {
             initialItemCount: state.length,
             data: state,
             itemBuilder: itemBuilder,
-            addBuilder: (Animation<double> animation, Widget child) => defaultAddBuilder(
+            addBuilder: (Animation<double> animation, _, Widget child) => defaultAddBuilder(
               animation: animation,
               child: child,
             ),

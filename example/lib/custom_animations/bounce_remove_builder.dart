@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget bounceRemoveBuilder(Animation<double> animation, Widget child) {
+Widget bounceRemoveBuilder(Animation<double> animation, int index, Widget child) {
   final sizeAnimation = CurvedAnimation(parent: animation, curve: Curves.bounceIn);
   final opacityAnimation = animation;
 
