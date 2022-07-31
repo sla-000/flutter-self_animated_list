@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:self_animated_list/self_animated_list.dart';
 
-Widget shiftAddBuilder({
-  required Animation<double> animation,
-  required Widget child,
-}) {
+Widget shiftAddBuilder(AnimationData animationData) {
   final curvedAnimation = CurvedAnimation(
-    parent: animation,
+    parent: animationData.animation,
     curve: Curves.easeOutCubic,
   );
 
@@ -26,7 +24,7 @@ Widget shiftAddBuilder({
         axis: Axis.horizontal,
         child: FadeTransition(
           opacity: opacityAnimation,
-          child: child,
+          child: animationData.child,
         ),
       ),
     ),

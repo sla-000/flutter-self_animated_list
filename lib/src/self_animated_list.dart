@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'animation_dto.dart';
+import 'default_builders.dart';
+import 'item_dto.dart';
 import 'utils/search_changes.dart';
 
 class SelfAnimatedList<T> extends StatefulWidget {
@@ -7,8 +10,8 @@ class SelfAnimatedList<T> extends StatefulWidget {
     super.key,
     required this.data,
     required this.itemBuilder,
-    required this.addBuilder,
-    required this.removeBuilder,
+    this.addBuilder = defaultAddBuilder,
+    this.removeBuilder = defaultRemoveBuilder,
     this.addDuration = const Duration(milliseconds: 800),
     this.removeDuration = const Duration(milliseconds: 800),
     this.initialItemCount = 0,
@@ -24,11 +27,9 @@ class SelfAnimatedList<T> extends StatefulWidget {
   });
 
   final List<T> data;
-  final Widget Function(BuildContext context, int index, T item) itemBuilder;
-  final Widget Function(BuildContext context, Animation<double> animation, int index, Widget child)
-      addBuilder;
-  final Widget Function(BuildContext context, Animation<double> animation, int index, Widget child)
-      removeBuilder;
+  final Widget Function(ItemData<T> itemData) itemBuilder;
+  final Widget Function(AnimationData animationData)? addBuilder;
+  final Widget Function(AnimationData animationData)? removeBuilder;
   final Duration addDuration;
   final Duration removeDuration;
   final int initialItemCount;
@@ -68,11 +69,21 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
       onRemove: (int index, T item) {
         _key.currentState?.removeItem(
           index,
-          (BuildContext context, Animation<double> animation) => widget.removeBuilder(
-            context,
-            animation,
-            index,
-            widget.itemBuilder(context, index, item),
+          (BuildContext context, Animation<double> animation) => widget.removeBuilder!.call(
+            AnimationData(
+              context: context,
+              index: index,
+              count: widget.data.length,
+              animation: animation,
+              child: widget.itemBuilder(
+                ItemData<T>(
+                  context: context,
+                  index: index,
+                  count: widget.data.length,
+                  item: item,
+                ),
+              ),
+            ),
           ),
           duration: widget.removeDuration,
         );
@@ -85,11 +96,21 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
     return AnimatedList(
       key: _key,
       itemBuilder: (BuildContext context, int index, Animation<double> animation) =>
-          widget.addBuilder(
-        context,
-        animation,
-        index,
-        widget.itemBuilder(context, index, widget.data.elementAt(index)),
+          widget.addBuilder!.call(
+        AnimationData(
+          context: context,
+          index: index,
+          count: widget.data.length,
+          animation: animation,
+          child: widget.itemBuilder(
+            ItemData<T>(
+              context: context,
+              index: index,
+              count: widget.data.length,
+              item: widget.data.elementAt(index),
+            ),
+          ),
+        ),
       ),
       initialItemCount: widget.initialItemCount,
       scrollDirection: widget.scrollDirection,

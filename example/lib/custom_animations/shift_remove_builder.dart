@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:self_animated_list/self_animated_list.dart';
 
-Widget shiftRemoveBuilder({
-  required Animation<double> animation,
-  required Widget child,
-  bool quick = false,
-}) {
+Widget shiftRemoveBuilder(AnimationData animationData) {
   final curvedAnimation = CurvedAnimation(
-    parent: animation,
-    curve: quick ? Curves.easeInCubic : Curves.easeOutCubic,
+    parent: animationData.animation,
+    curve: animationData.index.isOdd ? Curves.easeInCubic : Curves.easeOutCubic,
   );
 
   final sizeAnimation = curvedAnimation;
@@ -27,7 +24,7 @@ Widget shiftRemoveBuilder({
         axis: Axis.horizontal,
         child: FadeTransition(
           opacity: opacityAnimation,
-          child: child,
+          child: animationData.child,
         ),
       ),
     ),

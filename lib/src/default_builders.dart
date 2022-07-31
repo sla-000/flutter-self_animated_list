@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
 
-Widget defaultAddBuilder(
-  BuildContext context,
-  Animation<double> animation,
-  int index,
-  Widget child,
-) =>
-    defaultCurveBuilder(
-      animation: animation,
-      axis: Scrollable.of(context)!.widget.axis,
+import '../self_animated_list.dart';
+
+Widget defaultAddBuilder(AnimationData animationData) => defaultCurveBuilder(
+      animation: animationData.animation,
+      axis: Scrollable.of(animationData.context)!.widget.axis,
       curve: Curves.easeOutCubic,
-      child: child,
+      child: animationData.child,
     );
 
-Widget defaultRemoveBuilder(
-  BuildContext context,
-  Animation<double> animation,
-  int index,
-  Widget child,
-) =>
-    defaultCurveBuilder(
-      animation: animation,
-      axis: Scrollable.of(context)!.widget.axis,
-      child: child,
+Widget defaultRemoveBuilder(AnimationData animationData) => defaultCurveBuilder(
+      animation: animationData.animation,
+      axis: Scrollable.of(animationData.context)!.widget.axis,
+      child: animationData.child,
     );
 
 Widget defaultCurveBuilder({

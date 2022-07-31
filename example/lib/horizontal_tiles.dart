@@ -27,16 +27,8 @@ class HorizontalTiles extends StatelessWidget {
             initialItemCount: state.length,
             data: state,
             itemBuilder: itemBuilder,
-            addBuilder: (_, Animation<double> animation, __, Widget child) => shiftAddBuilder(
-              animation: animation,
-              child: child,
-            ),
-            removeBuilder: (_, Animation<double> animation, int index, Widget child) =>
-                shiftRemoveBuilder(
-              animation: animation,
-              child: child,
-              quick: index.isOdd,
-            ),
+            addBuilder: shiftAddBuilder,
+            removeBuilder: shiftRemoveBuilder,
           );
         },
       ),
