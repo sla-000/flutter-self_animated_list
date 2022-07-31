@@ -1,5 +1,5 @@
+import 'package:example/custom_animations/rotate_remove_builder.dart';
 import 'package:example/custom_animations/shift_add_builder.dart';
-import 'package:example/custom_animations/shift_remove_builder.dart';
 import 'package:example/logic/list_cubit.dart';
 import 'package:example/model/item_model.dart';
 import 'package:example/ui/item/item_builder.dart';
@@ -28,7 +28,7 @@ class HorizontalTiles extends StatelessWidget {
             data: state,
             itemBuilder: itemBuilder,
             addBuilder: shiftAddBuilder,
-            removeBuilder: shiftRemoveBuilder,
+            removeBuilder: rotateRemoveBuilder,
           );
         },
       ),

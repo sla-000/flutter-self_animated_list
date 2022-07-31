@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:self_animated_list/self_animated_list.dart';
 
-Widget shiftRemoveBuilder(AnimationData animationData) {
+Widget rotateRemoveBuilder(AnimationData animationData) {
   final curvedAnimation = CurvedAnimation(
     parent: animationData.animation,
     curve: Curves.easeInCubic,
