@@ -4,29 +4,32 @@ import 'package:self_animated_list/self_animated_list.dart';
 Widget shiftRemoveBuilder(AnimationData animationData) {
   final curvedAnimation = CurvedAnimation(
     parent: animationData.animation,
-    curve: animationData.index.isOdd ? Curves.easeInCubic : Curves.easeOutCubic,
+    curve: Curves.easeInCubic,
   );
 
   final sizeAnimation = curvedAnimation;
 
-  final offsetAnimation = Tween<Offset>(
-    begin: const Offset(0.0, 1.0),
-    end: const Offset(0.0, 0.0),
-  ).animate(curvedAnimation);
+  final rotationAnimation = Tween<double>(
+    begin: _calcRotation(animationData.index, animationData.count),
+    end: 0,
+  ).animate(animationData.animation);
 
-  final opacityAnimation = curvedAnimation;
+  final opacityAnimation = animationData.animation;
 
-  return ClipRect(
-    child: SlideTransition(
-      position: offsetAnimation,
-      child: SizeTransition(
-        sizeFactor: sizeAnimation,
-        axis: Axis.horizontal,
-        child: FadeTransition(
-          opacity: opacityAnimation,
-          child: animationData.child,
-        ),
+  return SizeTransition(
+    sizeFactor: sizeAnimation,
+    axis: Axis.horizontal,
+    child: RotationTransition(
+      turns: rotationAnimation,
+      child: FadeTransition(
+        opacity: opacityAnimation,
+        child: animationData.child,
       ),
     ),
   );
+}
+
+double _calcRotation(int index, int count) {
+  final offset = count / 2;
+  return (index - offset) / offset * 0.5;
 }
