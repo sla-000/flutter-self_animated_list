@@ -91,34 +91,30 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
       initial: mutableData,
       target: widget.data,
       isEqual: widget.isEqual,
-      onAdd: (int index, T item) {
-        _key.currentState?.insertItem(
-          index,
-          duration: widget.addDuration,
-        );
-      },
-      onRemove: (int index, T item) {
-        _key.currentState?.removeItem(
-          index,
-          (BuildContext context, Animation<double> animation) => widget.removeBuilder.call(
-            AnimationData(
-              context: context,
-              index: index,
-              count: widget.data.length,
-              animation: animation,
-              child: widget.itemBuilder(
-                ItemData<T>(
-                  context: context,
-                  index: index,
-                  count: widget.data.length,
-                  item: item,
-                ),
+      onAdd: (int index, T item) => _key.currentState?.insertItem(
+        index,
+        duration: widget.addDuration,
+      ),
+      onRemove: (int index, T item) => _key.currentState?.removeItem(
+        index,
+        (BuildContext context, Animation<double> animation) => widget.removeBuilder.call(
+          AnimationData(
+            context: context,
+            index: index,
+            count: widget.data.length,
+            animation: animation,
+            child: widget.itemBuilder(
+              ItemData<T>(
+                context: context,
+                index: index,
+                count: widget.data.length,
+                item: item,
               ),
             ),
           ),
-          duration: widget.removeDuration,
-        );
-      },
+        ),
+        duration: widget.removeDuration,
+      ),
     );
   }
 
