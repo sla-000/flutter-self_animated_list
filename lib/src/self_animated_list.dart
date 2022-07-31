@@ -26,10 +26,10 @@ class SelfAnimatedList<T> extends StatefulWidget {
     this.isEqual,
   });
 
-  /// List data
+  /// User data
   final List<T> data;
 
-  /// Items builder
+  /// Item builder
   final Widget Function(ItemData<T> itemData) itemBuilder;
 
   /// Animation of item add
@@ -44,6 +44,9 @@ class SelfAnimatedList<T> extends StatefulWidget {
   /// Duration of remove animation
   final Duration removeDuration;
 
+  /// Custom item equal check
+  final bool Function(T a, T b)? isEqual;
+
   /// See [AnimatedList]
   final int initialItemCount;
 
@@ -52,9 +55,6 @@ class SelfAnimatedList<T> extends StatefulWidget {
 
   /// See [AnimatedList]
   final bool reverse;
-
-  /// Custom item equal check
-  final bool Function(T a, T b)? isEqual;
 
   /// See [AnimatedList]
   final ScrollController? controller;
