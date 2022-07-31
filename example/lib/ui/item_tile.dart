@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-double tileWidth(BuildContext context) => 128 * MediaQuery.of(context).textScaleFactor;
-double tileHeight(BuildContext context) => 96 * MediaQuery.of(context).textScaleFactor;
+double tileWidth(BuildContext context) => 110 * MediaQuery.of(context).textScaleFactor;
+double tileHeight(BuildContext context) => 80 * MediaQuery.of(context).textScaleFactor;
 
 class ItemTile extends StatelessWidget {
   const ItemTile({
