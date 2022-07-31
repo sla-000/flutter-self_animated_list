@@ -31,5 +31,5 @@ Widget rotateRemoveBuilder(AnimationData animationData) {
 
 double _calcRotation(int index, int count) {
   final offset = count / 2;
-  return (index - offset) / offset * 0.5;
+  return (index - offset) / offset * 0.3;
 }
