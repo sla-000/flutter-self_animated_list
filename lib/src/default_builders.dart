@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../self_animated_list.dart';
+import 'animation_dto.dart';
 
 Widget defaultAddBuilder(AnimationData animationData) => defaultCurveBuilder(
       animation: animationData.animation,

@@ -26,22 +26,53 @@ class SelfAnimatedList<T> extends StatefulWidget {
     this.isEqual,
   });
 
+  /// List data
   final List<T> data;
+
+  /// Items builder
   final Widget Function(ItemData<T> itemData) itemBuilder;
-  final Widget Function(AnimationData animationData)? addBuilder;
-  final Widget Function(AnimationData animationData)? removeBuilder;
+
+  /// Animation of item add
+  final Widget Function(AnimationData animationData) addBuilder;
+
+  /// Duration of add animation
   final Duration addDuration;
+
+  /// Animation of item remove
+  final Widget Function(AnimationData animationData) removeBuilder;
+
+  /// Duration of remove animation
   final Duration removeDuration;
+
+  /// See [AnimatedList]
   final int initialItemCount;
+
+  /// See [AnimatedList]
   final Axis scrollDirection;
+
+  /// See [AnimatedList]
   final bool reverse;
-  final ScrollController? controller;
-  final bool? primary;
-  final ScrollPhysics? physics;
-  final bool shrinkWrap;
-  final EdgeInsetsGeometry? padding;
-  final Clip clipBehavior;
+
+  /// Custom item equal check
   final bool Function(T a, T b)? isEqual;
+
+  /// See [AnimatedList]
+  final ScrollController? controller;
+
+  /// See [AnimatedList]
+  final bool? primary;
+
+  /// See [AnimatedList]
+  final ScrollPhysics? physics;
+
+  /// See [AnimatedList]
+  final bool shrinkWrap;
+
+  /// See [AnimatedList]
+  final EdgeInsetsGeometry? padding;
+
+  /// See [AnimatedList]
+  final Clip clipBehavior;
 
   @override
   State<SelfAnimatedList<T>> createState() => _SelfAnimatedListState<T>();
@@ -69,7 +100,7 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
       onRemove: (int index, T item) {
         _key.currentState?.removeItem(
           index,
-          (BuildContext context, Animation<double> animation) => widget.removeBuilder!.call(
+          (BuildContext context, Animation<double> animation) => widget.removeBuilder.call(
             AnimationData(
               context: context,
               index: index,
@@ -95,8 +126,21 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
   Widget build(BuildContext context) {
     return AnimatedList(
       key: _key,
-      itemBuilder: (BuildContext context, int index, Animation<double> animation) =>
-          widget.addBuilder!.call(
+      itemBuilder: _itemAddBuilder,
+      initialItemCount: widget.initialItemCount,
+      scrollDirection: widget.scrollDirection,
+      reverse: widget.reverse,
+      controller: widget.controller,
+      primary: widget.primary,
+      physics: widget.physics,
+      shrinkWrap: widget.shrinkWrap,
+      padding: widget.padding,
+      clipBehavior: widget.clipBehavior,
+    );
+  }
+
+  Widget _itemAddBuilder(BuildContext context, int index, Animation<double> animation) =>
+      widget.addBuilder.call(
         AnimationData(
           context: context,
           index: index,
@@ -111,16 +155,5 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
             ),
           ),
         ),
-      ),
-      initialItemCount: widget.initialItemCount,
-      scrollDirection: widget.scrollDirection,
-      reverse: widget.reverse,
-      controller: widget.controller,
-      primary: widget.primary,
-      physics: widget.physics,
-      shrinkWrap: widget.shrinkWrap,
-      padding: widget.padding,
-      clipBehavior: widget.clipBehavior,
-    );
-  }
+      );
 }
