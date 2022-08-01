@@ -26,7 +26,6 @@ class VerticalTiles extends StatelessWidget {
             initialItemCount: state.length,
             data: state,
             itemBuilder: itemBuilder,
-            addBuilder: defaultAddBuilder,
             removeBuilder: bounceRemoveBuilder,
           );
         },
