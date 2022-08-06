@@ -23,7 +23,6 @@ class VerticalTiles extends StatelessWidget {
             scrollDirection: Axis.vertical,
             addDuration: const Duration(milliseconds: 2500),
             removeDuration: const Duration(milliseconds: 2500),
-            initialItemCount: state.length,
             data: state,
             itemBuilder: itemBuilder,
             removeBuilder: bounceRemoveBuilder,

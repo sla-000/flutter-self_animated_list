@@ -14,7 +14,6 @@ class SelfAnimatedList<T> extends StatefulWidget {
     this.removeBuilder = defaultRemoveBuilder,
     this.addDuration = const Duration(milliseconds: 800),
     this.removeDuration = const Duration(milliseconds: 800),
-    this.initialItemCount = 0,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -46,9 +45,6 @@ class SelfAnimatedList<T> extends StatefulWidget {
 
   /// Custom item equal check
   final bool Function(T a, T b)? isEqual;
-
-  /// See [AnimatedList]
-  final int initialItemCount;
 
   /// See [AnimatedList]
   final Axis scrollDirection;
@@ -123,7 +119,7 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
     return AnimatedList(
       key: _key,
       itemBuilder: _itemAddBuilder,
-      initialItemCount: widget.initialItemCount,
+      initialItemCount: widget.data.length,
       scrollDirection: widget.scrollDirection,
       reverse: widget.reverse,
       controller: widget.controller,

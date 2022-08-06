@@ -1,4 +1,3 @@
-- Add Widget tests
 - Write README.md
 - Publish
 - 

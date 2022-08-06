@@ -24,7 +24,6 @@ class HorizontalTiles extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             addDuration: const Duration(milliseconds: 1500),
             removeDuration: const Duration(milliseconds: 1500),
-            initialItemCount: state.length,
             data: state,
             itemBuilder: itemBuilder,
             addBuilder: shiftAddBuilder,
