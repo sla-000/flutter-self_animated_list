@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:self_animated_list/src/utils/search_changes.dart';
+import 'package:self_animated_list/src/utils/find_difference_index.dart';
 
 void main() {
   group('findDifferenceIndex', () {
