@@ -20,3 +20,4 @@ AnimatedList which animates self when list of the items changed
 Items widgets should have different keys or have no keys at all (see example)
 
 ## Example
+
