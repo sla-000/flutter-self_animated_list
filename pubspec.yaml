@@ -1,6 +1,6 @@
 name: self_animated_list
 description: AnimatedList which animates itself automatically when list of the items changed
-version: 0.2.0
+version: 3.0.0-rc.1
 repository: https://github.com/sla-000/self_animated_list
 
 environment:
