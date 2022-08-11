@@ -1,11 +1,22 @@
 name: flutter test
-on: [push, workflow_dispatch]
+on:
+  pull_request:
+    branches:
+      - develop
 jobs:
-  drive:
+  test:
+    name: Check the source code
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - uses: subosito/flutter-action@v1
-    # - run: flutter --version
-    # - run: flutter analyze
-    - run: flutter test
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2.3.0
+        with:
+          flutter-version: 'stable'
+      - name: Version
+        run: flutter --version
+      - name: Install packages
+        run: flutter pub get
+      - name: Linter
+        run: flutter analyze
+      - name: Test
+        run: flutter test
