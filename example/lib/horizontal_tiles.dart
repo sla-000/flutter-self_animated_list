@@ -1,17 +1,18 @@
-import 'package:example/custom_animations/rotate_remove_builder.dart';
-import 'package:example/custom_animations/shift_add_builder.dart';
-import 'package:example/logic/list_cubit.dart';
-import 'package:example/model/item_model.dart';
-import 'package:example/ui/item/item_builder.dart';
-import 'package:example/ui/item/item_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:self_animated_list/self_animated_list.dart';
 
+import 'custom_animations/rotate_remove_builder.dart';
+import 'custom_animations/shift_add_builder.dart';
+import 'logic/list_cubit.dart';
+import 'model/item_model.dart';
+import 'ui/item/item_builder.dart';
+import 'ui/item/item_tile.dart';
+
 class HorizontalTiles extends StatelessWidget {
   const HorizontalTiles({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

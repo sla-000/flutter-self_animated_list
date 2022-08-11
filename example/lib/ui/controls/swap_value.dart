@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class SwapValue extends StatefulWidget {
   const SwapValue({
-    Key? key,
+    super.key,
     this.prefix = '',
     required this.readValue,
     required this.onChange,
-  }) : super(key: key);
+  });
 
   final String prefix;
   final int Function() readValue;
@@ -21,7 +21,7 @@ class _SwapValueState extends State<SwapValue> {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: [
+      children: <Widget>[
         SizedBox(
           width: 64 * MediaQuery.of(context).textScaleFactor,
           child: Text(
@@ -31,7 +31,6 @@ class _SwapValueState extends State<SwapValue> {
         ),
         Expanded(
           child: Slider(
-            min: 0,
             max: 6,
             divisions: 3,
             value: widget.readValue().toDouble(),

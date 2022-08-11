@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+@immutable
 class ItemModel {
   ItemModel() : color = _getRandomColor();
 
@@ -17,7 +18,7 @@ class ItemModel {
   }
 
   static int _getRandomColorComponent() {
-    const delta = 200;
+    const int delta = 200;
     return Random.secure().nextInt(delta) + 255 - delta;
   }
 

@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:self_animated_list/self_animated_list.dart';
 
 Widget rotateRemoveBuilder(AnimationData animationData) {
-  final curvedAnimation = CurvedAnimation(
+  final CurvedAnimation curvedAnimation = CurvedAnimation(
     parent: animationData.animation,
     curve: Curves.easeInCubic,
   );
 
-  final sizeAnimation = curvedAnimation;
+  final CurvedAnimation sizeAnimation = curvedAnimation;
 
-  final rotationAnimation = Tween<double>(
+  final Animation<double> rotationAnimation = Tween<double>(
     begin: _calcRotation(animationData.index, animationData.count),
     end: 0,
   ).animate(animationData.animation);
 
-  final opacityAnimation = animationData.animation;
+  final Animation<double> opacityAnimation = animationData.animation;
 
   return SizeTransition(
     sizeFactor: sizeAnimation,
@@ -30,6 +30,6 @@ Widget rotateRemoveBuilder(AnimationData animationData) {
 }
 
 double _calcRotation(int index, int count) {
-  final offset = count / 2;
+  final double offset = count / 2;
   return (index - offset) / offset * 0.3;
 }

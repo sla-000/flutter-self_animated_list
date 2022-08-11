@@ -5,10 +5,10 @@ double tileHeight(BuildContext context) => 80 * MediaQuery.of(context).textScale
 
 class ItemTile extends StatelessWidget {
   const ItemTile({
-    Key? key,
+    super.key,
     required this.color,
     required this.index,
-  }) : super(key: key);
+  });
 
   final Color color;
   final int index;
@@ -26,12 +26,11 @@ class ItemTile extends StatelessWidget {
               top: 10,
               left: 10,
               child: Text(
-                "#$index",
+                '#$index',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
             Align(
-              alignment: Alignment.center,
               child: Text(
                 "0x${color.value.toRadixString(16).toUpperCase().substring(2).padLeft(6, '0')}",
               ),

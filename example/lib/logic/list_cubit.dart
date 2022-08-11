@@ -1,7 +1,8 @@
 import 'dart:math' as math;
 
-import 'package:example/model/item_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../model/item_model.dart';
 
 class ListCubit extends Cubit<List<ItemModel>> {
   ListCubit([int count = 5])
@@ -17,7 +18,7 @@ class ListCubit extends Cubit<List<ItemModel>> {
     int toRemove = 0,
     int toSwap = 0,
   }) {
-    List<ItemModel> newList = List<ItemModel>.of(state);
+    final List<ItemModel> newList = List<ItemModel>.of(state);
 
     _remove(toRemove, newList);
     _add(toAdd, newList);
@@ -54,7 +55,7 @@ class ListCubit extends Cubit<List<ItemModel>> {
 
     final math.Random random = math.Random.secure();
 
-    final List<int> indexesAvailable = List<int>.generate(newList.length, (index) => index);
+    final List<int> indexesAvailable = List<int>.generate(newList.length, (int index) => index);
 
     while (toSwap > 0) {
       final int swapIndex0 = indexesAvailable.elementAt(random.nextInt(indexesAvailable.length));

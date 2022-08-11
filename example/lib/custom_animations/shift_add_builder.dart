@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:self_animated_list/self_animated_list.dart';
 
 Widget shiftAddBuilder(AnimationData animationData) {
-  final curvedAnimation = CurvedAnimation(
+  final CurvedAnimation curvedAnimation = CurvedAnimation(
     parent: animationData.animation,
     curve: Curves.easeOutCubic,
   );
 
-  final sizeAnimation = curvedAnimation;
+  final CurvedAnimation sizeAnimation = curvedAnimation;
 
-  final offsetAnimation = Tween<Offset>(
+  final Animation<Offset> offsetAnimation = Tween<Offset>(
     begin: const Offset(0.0, -1.0),
-    end: const Offset(0.0, 0.0),
+    end: Offset.zero,
   ).animate(curvedAnimation);
 
-  final opacityAnimation = curvedAnimation;
+  final CurvedAnimation opacityAnimation = curvedAnimation;
 
   return ClipRect(
     child: SlideTransition(
