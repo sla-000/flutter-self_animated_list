@@ -14,7 +14,7 @@ IterationResult iterateSearchChanges<T>({
   void Function(int index, T item)? onRemove,
   bool Function(T a, T b)? isEqual,
 }) {
-  isEqual ??= _isEqualDefault<T>;
+  isEqual ??= _isEqualDefault;
 
   final int diffIndex = findDifferenceIndex(initial: initial, target: target);
 
