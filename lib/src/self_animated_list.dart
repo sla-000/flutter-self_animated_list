@@ -21,6 +21,7 @@ class SelfAnimatedList<T> extends StatefulWidget {
     this.physics,
     this.shrinkWrap = false,
     this.padding,
+    this.clipBehavior = Clip.hardEdge,
     this.isEqual,
   }) : super(key: key);
 
@@ -65,6 +66,9 @@ class SelfAnimatedList<T> extends StatefulWidget {
 
   /// See [AnimatedList]
   final EdgeInsetsGeometry? padding;
+
+  /// See [AnimatedList]
+  final Clip clipBehavior;
 
   @override
   State<SelfAnimatedList<T>> createState() => _SelfAnimatedListState<T>();
@@ -123,6 +127,7 @@ class _SelfAnimatedListState<T> extends State<SelfAnimatedList<T>> with TickerPr
       physics: widget.physics,
       shrinkWrap: widget.shrinkWrap,
       padding: widget.padding,
+      clipBehavior: widget.clipBehavior,
     );
   }
 
