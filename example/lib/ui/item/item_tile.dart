@@ -27,7 +27,7 @@ class ItemTile extends StatelessWidget {
               left: 10,
               child: Text(
                 "#$index",
-                style: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodyText2,
               ),
             ),
             Align(
