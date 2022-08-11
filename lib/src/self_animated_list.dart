@@ -7,7 +7,7 @@ import 'utils/search_changes.dart';
 
 class SelfAnimatedList<T> extends StatefulWidget {
   const SelfAnimatedList({
-    super.key,
+    Key? key,
     required this.data,
     required this.itemBuilder,
     this.addBuilder = defaultAddBuilder,
@@ -23,7 +23,7 @@ class SelfAnimatedList<T> extends StatefulWidget {
     this.padding,
     this.clipBehavior = Clip.hardEdge,
     this.isEqual,
-  });
+  }) : super(key: key);
 
   /// User data
   final List<T> data;
