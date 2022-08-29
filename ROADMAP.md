@@ -1,3 +1,3 @@
-- Write README.md
-- Publish
+- Improve swap algorithm
+- Add example to docs, add some explanation how it works
 - 

@@ -1,3 +1,11 @@
+## 0.8.0
+
+* Release version for flutter 2.2.x
+
+## 0.7.0
+
+* Release version for flutter 2.0.x
+
 ## 0.2.0
 
 * New Algorithm
