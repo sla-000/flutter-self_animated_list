@@ -32,13 +32,9 @@ This widget incapsulates diff logic and wraps standard AnimatedList. All you nee
 
 ## Demo
 
-### Add and remove two random tiles
+![Add and remove two random tiles](https://youtube.com/shorts/P0OSjON8CRA)
 
-https://youtube.com/shorts/P0OSjON8CRA
-
-### Swap two random tiles
-
-https://youtube.com/shorts/45q9P3r1j4k
+![Swap two random tiles](https://youtube.com/shorts/45q9P3r1j4k)
 
 
 ## Caveats
