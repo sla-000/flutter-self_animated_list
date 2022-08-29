@@ -34,11 +34,11 @@ This widget incapsulates diff logic and wraps standard AnimatedList. All you nee
 
 ### Add and remove two random tiles
 
-<video src='docs/22.18.37.mp4' width=300/>
+[Add and remove two random tiles](./docs/22.18.37.mp4)
 
 ### Swap two random tiles
 
-<video src='docs/22.18.16.mp4' width=300/>
+[Swap two random tiles](./docs/22.18.16.mp4)
 
 
 ## Caveats
