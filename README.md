@@ -34,13 +34,10 @@ This widget incapsulates diff logic and wraps standard AnimatedList. All you nee
 
 ### Add and remove two random tiles
 
-<video src="https://youtube.com/shorts/P0OSjON8CRA" controls="controls" style="max-width: 300px;">
-</video>
+
 
 ### Swap two random tiles
 
-<video src="https://youtube.com/shorts/45q9P3r1j4k" controls="controls" style="max-width: 300px;">
-</video>
 
 
 ## Caveats
