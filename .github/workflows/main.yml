@@ -1,5 +1,8 @@
 name: flutter test
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     branches:
       - develop
@@ -9,9 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2.3.0
-        with:
-          flutter-version: 'stable'
+      - uses: subosito/flutter-action@v2.6.1
+        # with:
+          # flutter-version: 'stable'
       - name: Version
         run: flutter --version
       - name: Install packages
